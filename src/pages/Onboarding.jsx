@@ -1,9 +1,10 @@
-import React from 'react'
 
 function Onboarding() {
+ 
+
   return (
-    <div>Onboarding</div>
-  )
+    <h2>Förmuläret</h2>
+  );
 }
 
-export default Onboarding
+export default Onboarding;

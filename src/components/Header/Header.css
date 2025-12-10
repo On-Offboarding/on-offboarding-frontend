@@ -1,0 +1,84 @@
+/* ===========================
+   HEADER CONTAINER
+=========================== */
+header {
+  grid-area: header;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ccc;
+  padding: 1.5rem;
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Desktop – justera innehåll */
+@media (width >= 768px) {
+  header {
+    justify-content: flex-end;
+  }
+}
+
+
+/* ===========================
+   HAMBURGER BUTTON (MOBILE ONLY)
+=========================== */
+.hamburger-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.fa-bars {
+  font-size: 40px;
+}
+
+/* Hide hamburger on desktop */
+@media (width >= 768px) {
+  .hamburger-btn {
+    display: none;
+  }
+}
+
+
+/* ===========================
+   HEADER TITLE
+=========================== */
+.header-title {
+  flex: 1;
+  text-align: center;
+}
+
+.header-title h1 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Tablet layout */
+@media (width >= 600px) and (width < 768px) {
+  .header-title {
+    text-align: left;
+  }
+
+  .header-title h1 {
+    font-size: 20px;
+  }
+}
+
+/* Desktop layout */
+@media (width >= 768px) {
+  .header-title {
+    text-align: left;
+  }
+
+  .header-title h1 {
+    font-size: 22px;
+  }
+}
