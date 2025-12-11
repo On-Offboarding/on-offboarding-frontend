@@ -31,7 +31,7 @@
   justify-content: center;
 }
 
-@media (width >= 600px) {
+@media (min-width: 600px) {
   .profile-btn-mobile {
     display: none;
   }
@@ -59,7 +59,7 @@
   margin: 0;
 }
 
-@media (width >= 600px) {
+@media (min-width: 600px) {
   .profile-info-tablet {
     display: flex;
     flex-direction: column;
@@ -88,7 +88,7 @@
   flex-shrink: 0;
 }
 
-.profile-btn-mobile:hover .profile-avatar {
+.profile-btn:hover .profile-avatar {
   transform: scale(1.05);
 }
 
@@ -109,9 +109,10 @@
   animation: slideDown 0.2s ease-out;
 }
 
-@media (width >= 600px) {
+/* Visa dropdown även på större skärmar. Anpassa bredd för bredare vyer. */
+@media (min-width: 900px) {
   .dropdown-menu {
-    display: none;
+    min-width: 320px;
   }
 }
 
@@ -170,4 +171,45 @@
   font-weight: 400;
 }
 
+.dropdown-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 0;
+}
+
+/* Dropdown List */
+.dropdown-list {
+  list-style: none;
+  padding: 0.5rem 0;
+  margin: 0;
+}
+
+.dropdown-list li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 1.5rem;
+  color: #374151;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-list li a:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-list li a i {
+  width: 20px;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.dropdown-list li:last-child a {
+  color: #dc2626;
+}
+
+.dropdown-list li:last-child a i {
+  color: #dc2626;
+}
 

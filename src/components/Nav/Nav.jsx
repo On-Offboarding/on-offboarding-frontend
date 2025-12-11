@@ -20,6 +20,8 @@ function Nav({ isOpen, onClose }) {
             <span className="nav-text">On/Offboarding</span>
         </NavLink>   
     </nav>
+
+    
   );
 }
 

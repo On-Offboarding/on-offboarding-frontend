@@ -62,8 +62,21 @@ function ProfileDropdown({ user }) {
               <p className="dropdown-role">{user.role}</p>
             </div>
           </div>
+
+          <div className="dropdown-divider"></div>
+          
+          <ul className="dropdown-list">
+            <li>
+              <a href="/login">
+                <i className="fa-solid fa-right-from-bracket"></i>
+                Logga ut
+              </a>
+            </li>
+          </ul>
           
         </div>
+
+        
       )}
     </div>
   );
