@@ -1,0 +1,215 @@
+/* ===========================
+   PROFILE DROPDOWN CONTAINER
+=========================== */
+.profile-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 1rem;
+}
+
+.profile-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+}
+
+
+/* ===========================
+   MOBILE PROFILE BUTTON
+=========================== */
+.profile-btn-mobile {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 600px) {
+  .profile-btn-mobile {
+    display: none;
+  }
+}
+
+
+/* ===========================
+   PROFILE INFO (TABLET + DESKTOP)
+=========================== */
+.profile-info-tablet {
+  display: none;
+}
+
+.profile-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.profile-role {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 0;
+}
+
+@media (min-width: 600px) {
+  .profile-info-tablet {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: start;
+    justify-content: center;
+  }
+}
+
+
+/* ===========================
+   PROFILE AVATAR (ALL DEVICES)
+=========================== */
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.profile-btn:hover .profile-avatar {
+  transform: scale(1.05);
+}
+
+
+/* ===========================
+   MOBILE DROPDOWN MENU
+=========================== */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+}
+
+/* Visa dropdown även på större skärmar. Anpassa bredd för bredare vyer. */
+@media (min-width: 900px) {
+  .dropdown-menu {
+    min-width: 320px;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ===========================
+   DROPDOWN HEADER
+=========================== */
+.dropdown-header {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dropdown-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.dropdown-info {
+  flex: 1;
+}
+
+.dropdown-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.dropdown-role {
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 0;
+}
+
+/* Dropdown List */
+.dropdown-list {
+  list-style: none;
+  padding: 0.5rem 0;
+  margin: 0;
+}
+
+.dropdown-list li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 1.5rem;
+  color: #374151;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-list li a:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-list li a i {
+  width: 20px;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.dropdown-list li:last-child a {
+  color: #dc2626;
+}
+
+.dropdown-list li:last-child a i {
+  color: #dc2626;
+}
+
