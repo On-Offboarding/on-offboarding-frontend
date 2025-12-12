@@ -14,7 +14,7 @@ header {
 }
 
 /* Desktop – justera innehåll */
-@media (width >= 768px) {
+@media (min-width: 769px) {
   header {
     justify-content: flex-end;
   }
@@ -39,7 +39,7 @@ header {
 }
 
 /* Hide hamburger on desktop */
-@media (width >= 768px) {
+@media (min-width: 769px) {
   .hamburger-btn {
     display: none;
   }
@@ -62,7 +62,7 @@ header {
 }
 
 /* Tablet layout */
-@media (width >= 600px) and (width < 768px) {
+@media (min-width: 600px) and (max-width: 767px) {
   .header-title {
     text-align: left;
   }
@@ -73,7 +73,7 @@ header {
 }
 
 /* Desktop layout */
-@media (width >= 768px) {
+@media (min-width: 769px) {
   .header-title {
     text-align: left;
   }
