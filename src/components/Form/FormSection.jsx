@@ -1,8 +1,15 @@
+import { useState } from "react";
+import SystemAccessList from "../../components/Form/SystemAccessList";
+import "../Form/FormSection.css";
+
+
+
 function FormSection() {
+  const [accesses, setAccesses] = useState([]);
+  
+
   return (
     <div className="form-section">
-
-
       <form action="">
 
         <div className="form-info">
@@ -60,6 +67,8 @@ function FormSection() {
           <input type="date" name="employmentdate" placeholder="Anställningsdag" />
         </div>
         
+        <SystemAccessList accesses={accesses} setAccesses={setAccesses} />
+
       </form>
     </div>
   );

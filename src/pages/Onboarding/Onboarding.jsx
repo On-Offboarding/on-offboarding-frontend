@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import ToggleType from "../../components/Form/ToggleType";
 import FormSection from "../../components/Form/FormSection";
-import SystemAccessList from "../../components/Form/SystemAccessList";
+
 import "./Onboarding.css";
 
 
 function Onboarding() {
   const [type, setType] = useState("onboarding");
-    const [accesses, setAccesses] = useState([]);
   return (
     <>
       <div className="page-title">
@@ -19,7 +18,11 @@ function Onboarding() {
         
         <ToggleType type={type} setType={setType} />
         <FormSection type={type} />
-        <SystemAccessList accesses={accesses} setAccesses={setAccesses} />
+      
+
+        <div className="submit">
+          <button className="submit-btn">Skicka ärende</button>
+        </div>
       </div>
 
     

@@ -1,0 +1,18 @@
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar input {
+  width: 100%;
+  margin-top: 1rem;
+  padding-left: 3rem;
+}
+
+.search-bar .fa-search {
+  position: absolute;
+  font-size: 20px;
+  top: 2rem;
+  left: 0.7rem;
+}

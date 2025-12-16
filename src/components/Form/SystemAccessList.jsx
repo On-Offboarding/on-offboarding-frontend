@@ -7,7 +7,8 @@ const systems = [
 ];
 
 function SystemAccessList({ accesses, setAccesses }) {
-  const toggleAll = () => {
+  const toggleAll = (e) => {
+    e.preventDefault();
     if (accesses.length === systems.length) {
       setAccesses([]);
     } else {
@@ -27,12 +28,12 @@ function SystemAccessList({ accesses, setAccesses }) {
     <div className="system-access">
       <div className="system-header">
         <h4>Systemåtkomster</h4>
-        <button className="mark-all" onClick={toggleAll}>
+        <button type="button" className="mark-all" onClick={toggleAll}>
           {accesses.length === systems.length ? "Avmarkera alla" : "Markera alla"}
         </button>
       </div>
 
-      <div className="grid-3">
+      <div className="system-list">
         {systems.map((sys) => (
           <label key={sys} className="checkbox-item">
             <input type="checkbox" checked={accesses.includes(sys)} onChange={() => toggleOne(sys)} />
