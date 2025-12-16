@@ -7,7 +7,7 @@ nav {
   background-color: #E4E5F5;
 }
 
-@media (width >= 768px) {
+@media (min-width: 769px) {
   nav {
     display: block;
     align-self: stretch;
