@@ -9,7 +9,7 @@ function ToggleType({ type, setType }) {
       navigate("/offboarding");
     }
     if (value === "onboarding") {
-      navigate("/");
+      navigate("/onboarding");
     }
   };
 

@@ -20,7 +20,7 @@ function Header({ onMenuToggle }) {
 
   return (
     <>
-      <header>
+      <header className='header'>
         <button className="hamburger-btn" onClick={toggleMenu} aria-label="Toggle menu" >
           <span><i className="fa-solid fa-bars"></i> </span>
         </button>      
