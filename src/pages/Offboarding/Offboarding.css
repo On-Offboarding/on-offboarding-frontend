@@ -35,10 +35,10 @@
   font-size: 28px;
   font-weight: bold;
 }
-.employee span{
+.employee p{
   font-size: 16px;
   color: #555;
-  margin-top: .5rem;
+  /* margin-top: .5rem; */
 }
 .employee-details-list{
   display: flex;
@@ -78,11 +78,14 @@
 } 
 
 @media (min-width: 600px){
+
+  .case-container{
+    padding: 1.5rem;
+  }
+
   .employee-details-list{
     flex-direction: row;
     gap: 5rem;
-    margin-block: 3rem;
-    padding-bottom: 1rem;
   }
   .remove-btn-container{
     justify-content: flex-end;

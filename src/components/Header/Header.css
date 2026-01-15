@@ -1,7 +1,7 @@
 /* ===========================
    HEADER CONTAINER
 =========================== */
-header {
+.header {
   grid-area: header;
   background-color: #ffffff;
   border-bottom: 1px solid #ccc;
@@ -15,7 +15,7 @@ header {
 
 /* Desktop – justera innehåll */
 @media (min-width: 769px) {
-  header {
+  .header {
     justify-content: flex-end;
   }
 }
