@@ -4,7 +4,7 @@ import PortalLayout from "./layouts/PortalLayout.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import Onboarding from "./pages/Onboarding/Onboarding.jsx";
 import Offboarding from "./pages/Offboarding/Offboarding.jsx";
-import Audit from "./pages/Audit.jsx";
+import Audit from "./pages/Audit/Audit.jsx";
 import Login from "./pages/Login.jsx";
 import "./App.css";
 
