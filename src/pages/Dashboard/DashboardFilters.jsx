@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import TypeDropdown from "../../components/UI/TypeDropdown";
 import "./Dashboard.css";
 
@@ -9,8 +10,14 @@ import "./Dashboard.css";
  * - onChange: (updatedFilters) => void - Callback när filter ändras
  */
 function DashboardFilters({ filters, onChange }) {
+  const navigate = useNavigate();
+
   const handleTypeChange = (selectedType) => {
     onChange({ ...filters, type: selectedType });
+  };
+
+  const handleAuditClick = () => {
+    navigate("/audit");
   };
 
   return (
@@ -18,7 +25,13 @@ function DashboardFilters({ filters, onChange }) {
       <div className="filter-title">
         <h2>Alla Ärende</h2>
       </div>
-      <TypeDropdown value={filters.type || "alla"} onChange={handleTypeChange}/>
+      <div className="filter-controls">
+        <button className="audit-btn" onClick={handleAuditClick} title="Gå till Audit Log">
+          <i className="fa-solid fa-clock-rotate-left"></i>
+          <span>Audit Log</span>
+        </button>
+        <TypeDropdown value={filters.type || "alla"} onChange={handleTypeChange}/>
+      </div>
     </div>
   );
 }

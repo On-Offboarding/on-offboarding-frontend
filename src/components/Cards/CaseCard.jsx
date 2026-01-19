@@ -42,7 +42,16 @@ function CaseCard({
           {/* ---------- Header ---------- */}
           <div className="case-header">
             <div className="case-subheader">
-              <h3>{employee.name}</h3>
+              <div className="name-export">
+                <h3>{employee.name}</h3>
+                <div className="export">
+                  <button className='export-btn'>
+                    <i className="fa-solid fa-file-export"></i>
+                    <span>Exportera</span>
+                  </button>
+                </div>
+
+              </div>
 
               <div className="status">
                 <span className={`status-label ${employee.status}`}>
@@ -52,6 +61,7 @@ function CaseCard({
                   {TYPE_LABELS[employee.type] || employee.type}
                 </span>
               </div>
+
             </div>
 
             <button
