@@ -1,0 +1,115 @@
+.audit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #eee;
+  background-color: #f9f9f9;
+}
+
+.audit-header-content {
+  flex: 1;
+  padding-top: 2rem;
+  padding-left: 2rem;
+  
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0;
+  text-decoration: none;
+  padding: .5rem 1rem ;
+}
+
+.back-button:hover {
+  background-color: #E5E5EA;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.audit-link {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: 400;
+}
+
+.audit-container {
+  padding: 2rem 1.5rem;
+  width: 100%;
+}
+
+.audit-section {
+  background-color: #fff;
+}
+
+.audit-title-group {
+  margin-bottom: 2rem;
+}
+
+.audit-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.audit-subtitle {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0;
+  font-weight: 400;
+}
+
+.audit-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.audit-entry {
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: #fafafa;
+  transition: background-color 0.2s ease;
+}
+
+.audit-entry:hover {
+  background-color: #f3f4f6;
+}
+
+.entry-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 0.7rem 0;
+}
+
+.entry-description {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0 0 0.5rem 0;
+}
+
+.entry-meta {
+  font-size: 0.85rem;
+  color: #999;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.entry-user {
+  color: #666;
+}
+
+.entry-timestamp {
+  color: #666;
+}
