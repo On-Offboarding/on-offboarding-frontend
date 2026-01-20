@@ -33,8 +33,7 @@
 }
 
 .dropdown-trigger:hover {
-  border-color: #666;
-  background-color: #f0f7ff;
+  background-color: #E5E5EA;
 }
 
 .dropdown-trigger:focus {
@@ -110,18 +109,17 @@
 }
 
 .dropdown-option:hover {
-  background-color: #f0f7ff;
-  color: #666;
+  background-color: #E5E5EA;
 }
 
 .dropdown-option.selected {
-  background-color: #E6F2FF;
+  background-color: #E5E5EA;
   color: #666;
   font-weight: 600;
 }
 
 .dropdown-option:active {
-  background-color: #666;
+  background-color: #E5E5EA;
   color: #fff;
 }
 

@@ -10,7 +10,7 @@ import './Pagination.css';
  * - onPageChange: (pageNumber) => void - Callback när sidan ändras
  * - itemsPerPage: number (optional) - Antal items per sida (för information)
  */
-function Pagination({ currentPage = 1, totalPages = 1, onPageChange, itemsPerPage = 10 }) {
+function Pagination({ currentPage = 1, totalPages = 1, onPageChange = 10 }) {
   // Generera array av sidnummer att visa
   const getPageNumbers = () => {
     const pages = [];

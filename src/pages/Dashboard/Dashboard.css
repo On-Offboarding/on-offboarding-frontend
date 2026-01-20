@@ -37,9 +37,8 @@
 }
 
 .tabs-btn:hover {
-  border-color: #0088FF;
-  color: #0088FF;
-  background-color: #f0f7ff;
+  background-color: #E5E5EA;
+  transition: background-color 0.2s ease;
 }
 
 .tabs-btn.active {
@@ -135,8 +134,7 @@
 }
 
 .audit-btn:hover {
-  border-color: #666;
-  background-color: #f0f7ff;
+  background-color: #E5E5EA;
 }
 
 .audit-btn:focus {

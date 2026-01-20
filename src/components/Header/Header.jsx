@@ -4,7 +4,7 @@ import ProfileDropdown from '../ProfileDropdown/ProfileDropdown';
 import Nav from '../Nav/Nav';
 import './Header.css';
 
-function Header({ onMenuToggle }) {
+function Header() {
 
     // Dummy user data - ersätt med riktig data från din state/context
   const user = {
