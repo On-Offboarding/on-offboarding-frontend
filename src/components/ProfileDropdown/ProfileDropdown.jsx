@@ -1,4 +1,3 @@
-// components/ProfileDropdown/ProfileDropdown.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import './ProfileDropdown.css';
 

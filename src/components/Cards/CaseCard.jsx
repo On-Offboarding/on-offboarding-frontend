@@ -133,7 +133,7 @@ function CaseCard({
               {/* ---------- Modal Footer ---------- */}
               <div className="modal-footer">
                 <div className="submit">
-                  <button className="submit-btn">
+                  <button className="submit-btn" type='submit'>
                     Avsluta ärende
                   </button>
                 </div>

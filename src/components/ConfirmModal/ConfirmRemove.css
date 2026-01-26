@@ -4,20 +4,17 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--color-overlay-dark);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
+  z-index: var(--z-modal);
 }
 
-/* ================================
-   MODAL CONTAINER
-================================ */
 .modal {
-  background: #f3f4f6;
+  background: var(--color-bg-lighter);
   border-radius: 14px;
-  padding: 2rem;
+  padding: var(--spacing-2xl);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   animation: modalFade 0.2s ease-out;
 }
@@ -33,17 +30,14 @@
   }
 }
 
-/* ================================
-   CONTENT
-================================ */
 .modal-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-sm);
 }
 
 .modal-message {
-  font-size: 14px;
+  font-size: var(--font-size-md);
   color: #4b5563;
   margin-bottom: 1.25rem;
 }
@@ -54,23 +48,23 @@
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
+  gap: var(--spacing-md);
 }
 
 .btn-secondary {
-  background-color: #fff;
+  background-color: var(--color-bg-white);
   border: 1px solid #b7b6b6;
-  border-radius: 5px;
-  padding: 0.8rem 1.5rem;
-  margin-top: 1rem;
+  border-radius: var(--border-radius-md);
+  padding: 0.8rem var(--btn-padding-sm);
+  margin-top: var(--spacing-lg);
   cursor: pointer;
   font-size: 15px;
 }
 
 .btn-secondary:hover {
-  background-color: #f3f3f3;
+  background-color: var(--color-bg-light);
 }
 
 .fa-trash-can {
-  margin-right: 0.5rem;
+  margin-right: var(--spacing-sm);
 }

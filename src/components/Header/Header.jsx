@@ -6,7 +6,7 @@ import './Header.css';
 
 function Header() {
 
-    // Dummy user data - ersätt med riktig data från din state/context
+    // Dummy user data
   const user = {
     name: 'Orlando Laurentius',
     role: 'Chef'
