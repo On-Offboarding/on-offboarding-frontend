@@ -1,6 +1,118 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap'); */
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+/* ==============================
+   CSS VARIABLES - DESIGN SYSTEM
+============================== */
+:root {
+  /* ===== TYPOGRAPHY ===== */
+  --font-family-primary: "Inter", sans-serif;
+  --font-size-base: 16px;
+  --font-weight-light: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Font sizes */
+  --font-size-sm: 12px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 22px;
+  --font-size-4xl: 36px;
+  --font-size-5xl: 40px;
+
+  /* ===== COLORS - PRIMARY ===== */
+  --color-primary: #0088ff;
+  --color-primary-hover: #0077e6;
+  --color-primary-active: #0066cc;
+  --color-primary-light: #eaefff;
+  --color-primary-bg: #f0f7ff;
+
+  /* ===== COLORS - STATUS ===== */
+  --color-status-success: #27C840;
+  --color-status-warning: #E5E5EA;
+  --color-status-info: #0088ff;
+  --color-status-text-dark: #000;
+  --color-status-text-light: #fff;
+
+  /* ===== COLORS - NEUTRAL ===== */
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #1C2346;
+  --color-text-tertiary: #666;
+  --color-text-light: #999;
+  --color-bg-white: #fff;
+  --color-bg-light: #f3f3f3;
+  --color-bg-lighter: #f3f4f6;
+  --color-bg-nav: #E4E5F5;
+  --color-border: #ccc;
+  --color-border-light: #ddd;
+  --color-border-lighter: #eee;
+
+  /* ===== COLORS - OVERLAY ===== */
+  --color-overlay-dark: rgba(0, 0, 0, 0.5);
+  --color-overlay-shadow: rgba(0, 0, 0, 0.1);
+
+  /* ===== SPACING ===== */
+  --spacing-xs: 0.35rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 0.75rem;
+  --spacing-lg: 1rem;
+  --spacing-xl: 1.5rem;
+  --spacing-2xl: 2rem;
+  --spacing-3xl: 3rem;
+  --spacing-4xl: 4rem;
+  --spacing-4_5xl: 4.5rem;
+
+  /* ===== BORDER RADIUS ===== */
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+  --border-radius-xl: 12px;
+  --border-radius-2xl: 16px;
+  --border-radius-full: 50%;
+
+  /* ===== BREAKPOINTS ===== */
+  --breakpoint-mobile: 480px;
+  --breakpoint-tablet: 600px;
+  --breakpoint-tablet-lg: 768px;
+  --breakpoint-desktop: 1024px;
+  --breakpoint-desktop-lg: 1400px;
+
+  /* ===== SHADOWS ===== */
+  --shadow-sm: 2px 0 10px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 2px 8px rgba(0, 136, 255, 0.3);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  /* ===== TRANSITIONS ===== */
+  --transition-fast: ease-in-out 0.2s;
+  --transition-normal: all 0.3s ease;
+
+  /* ===== Z-INDEX ===== */
+  --z-overlay: 999;
+  --z-modal: 1000;
+
+  /* ===== BUTTON STYLES ===== */
+  --btn-padding: 1rem;
+  --btn-padding-sm: 0.75rem .75rem;
+  --btn-padding-lg: 18px 3rem;
+  --btn-border-radius: 6px;
+  --btn-font-size: 16px;
+  --btn-font-size-lg: 18px;
+
+  /* ===== INPUT STYLES ===== */
+  --input-padding: 0.9rem;
+  --input-padding-form: 18px;
+  --input-border-radius: 8px;
+  --input-border: 1px solid var(--color-border);
+  --input-border-focus: 1px solid var(--color-text-light);
+
+  /* ===== HEIGHTS ===== */
+  --height-header: 100px;
+  --height-nav: auto;
+}
+
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -8,16 +120,12 @@
 }
 
 html, body {
-  font-family:  "Inter", sans-serif;
-  font-size: 16px;
-  font-weight: 400;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-light);
   font-style: normal;
   min-height: 100vh;
 }
-
-/* ==============================
-   LAYOUT-KOMPONENTER
-================================ */
 
 /* Grid-baserad portalstruktur */
 .portal-wrapper {
@@ -28,7 +136,7 @@ html, body {
     "header" 
     "main";
   min-height: 100dvh;
-  row-gap: 1rem;
+  row-gap: var(--spacing-lg);
 }
 
 @media (min-width: 769px) {
@@ -38,7 +146,7 @@ html, body {
     grid-template-areas:
       "nav header"
       "nav main";
-    gap: 1rem;
+    gap: var(--spacing-lg);
   }
 }
 
@@ -51,9 +159,30 @@ html, body {
 
 main {
   grid-area: main;
-  background-color: #ffffff;
+  background-color: var(--color-bg-white);
   border-radius: 1rem;
-  padding: 1.5rem;
+  padding: var(--spacing-xl);
   overflow-y: auto;
   min-height: 0;
 }
+
+
+
+/* Center wrapper layout */
+.center-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+  background-color: #EEEFFF;
+}
+
+.center-content {
+  background-color: var(--color-bg-white);
+  padding: var(--spacing-2xl);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 500px;
+}
+

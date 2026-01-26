@@ -4,23 +4,23 @@
 .form-wrapper {
  /* position: relative; */
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: var(--spacing-2xl) var(--spacing-lg);
 }
 
 .form-title {
-  font-size: 20px;
-  margin-bottom: 1.5rem;
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-xl);
 }
 
 .page-title {
   display: flex;
   gap: .5rem;
   align-items: center;
-  padding: 1rem;
+  padding: var(--spacing-lg);
 }
 .page-title h2{
   margin: 0;
-  font-weight: 400;
+  font-weight: var(--font-weight-light);
   font-size: 32px;
 }
 .page-title .fa-user-plus {
@@ -33,10 +33,9 @@
 .toggle-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
   height: 200px;
-
 }
 
 @media (min-width: 600px){
@@ -52,10 +51,10 @@
 
 .toggle-btn {
   height: 150px;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  background: #f3f3f3;
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  border-radius: var(--input-border-radius);
+  border: 1px solid var(--color-border-light);
+  background: var(--color-bg-light);
   cursor: pointer;
   flex: 1;
   font-size: 1.5rem;

@@ -10,13 +10,13 @@ function Audit() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Dummy user data - ersätt med riktig data från din state/context
+  // Dummy user data 
   const user = {
     name: 'Orlando Laurentius',
     role: 'Chef'
   };
 
-  // Dummy audit trail data - ersätt med riktig data från din API
+  // Dummy audit trail data
   const auditEntries = [
     {
       id: 1,

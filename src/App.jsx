@@ -5,8 +5,9 @@ import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import Onboarding from "./pages/Onboarding/Onboarding.jsx";
 import Offboarding from "./pages/Offboarding/Offboarding.jsx";
 import Audit from "./pages/Audit/Audit.jsx";
-import Login from "./pages/Login.jsx";
+import Login from "./pages/SignIn/Login.jsx";
 import "./App.css";
+import CenterWrapperLayout from './layouts/CenterWrapperLayout.jsx';
 
 
 
@@ -19,8 +20,12 @@ function App() {
         <Route path="/offboarding" element={<Offboarding />} />
       </Route>
 
-      <Route path="/login" element={<Login />} />
+      <Route element={<CenterWrapperLayout />}>
+        <Route path="/login" element={<Login />} />
+      </Route>
+
       <Route path="/audit" element={<Audit />} />
+      
     </Routes>
   );
 }
