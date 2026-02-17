@@ -70,6 +70,159 @@
 }
 
 
+/* ===========================
+   SYSTEM ACCESS LIST
+=========================== */
+.system-access {
+  background: #f3f4f6;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+.system-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 2.4rem;
+}
+
+.mark-all {
+  padding: .8rem .8rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+.mark-all:hover {
+  background: #e5e7eb;
+}
+
+.system-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  column-gap: 2rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 600px){
+  .system-list {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .system-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  .mark-all{
+    padding: .8rem 1rem;
+  }
+}
+
+.systemAccess-btn{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: .8rem;
+}
+
+/* Profile Dropdown */
+.profile-dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-dropdown-trigger {
+  padding: .8rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  min-width: 160px;
+}
+
+.profile-dropdown-trigger:hover {
+  background: #f9fafb;
+}
+
+.profile-dropdown-trigger .dropdown-icon {
+  transition: transform 0.18s ease;
+  color: #374151;
+  margin-left: auto;
+}
+
+.profile-dropdown-trigger .dropdown-icon.open {
+  transform: rotate(180deg);
+}
+
+.profile-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  list-style: none;
+  padding: 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.profile-option {
+  display: block;
+  padding: .8rem;
+  cursor: pointer;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.profile-option:hover {
+  background: #f3f4f6;
+}
+
+.profile-option.selected {
+  background: #dbeafe;
+  color: #0c4a6e;
+  font-weight: 600;
+}
+
+.profile-dropdown-menu li:first-child .profile-option {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.chooseProfile-btn {
+  padding: .8rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+
+
+.checkbox-item {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+.checkbox-item input {
+  width: 16px;
+  height: 16px;
+}
+
+
 
 
 
