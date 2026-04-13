@@ -7,6 +7,7 @@ import "./Onboarding.css";
 
 function Onboarding() {
   const [type, setType] = useState("onboarding");
+
   return (
     <>
       <div className="page-title">
@@ -15,19 +16,10 @@ function Onboarding() {
       </div>
 
       <div className="form-wrapper">
-        
         <ToggleType type={type} setType={setType} />
         <FormSection type={type} />
-      
-
-        <div className="submit">
-          <button className="submit-btn">Skicka ärende</button>
-        </div>
       </div>
-
-    
     </>
-
   );
 }
 

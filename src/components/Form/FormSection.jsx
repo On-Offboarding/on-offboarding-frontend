@@ -1,13 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState, forwardRef } from "react";
 import { useFormValidation } from "../../hooks/useFormValidation";
 import { formSectionValidationRules } from "../../utils/validators";
 import SystemAccessList from "../../components/Form/SystemAccessList";
+import { caseService } from "../../Api";
 import "../Form/FormSection.css";
 
 
 
-function FormSection() {
+const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
   const [accesses, setAccesses] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    if (!successMessage) return undefined;
+
+    const timerId = setTimeout(() => {
+      setSuccessMessage(null);
+    }, 5000);
+
+    return () => clearTimeout(timerId);
+  }, [successMessage]);
+
+  useEffect(() => {
+    if (!errorMessage) return undefined;
+
+    const timerId = setTimeout(() => {
+      setErrorMessage(null);
+    }, 5000);
+
+    return () => clearTimeout(timerId);
+  }, [errorMessage]);
+
+  const typeValue = type === "offboarding" ? 2 : 1;
+  const statusValue = 1;
+  const createdByUser = 0;
+
+  const companyMap = {
+    finansia: 1,
+    agency: 2,
+  };
 
   const initialValues = {
     firstname: '',
@@ -21,17 +54,125 @@ function FormSection() {
     employmentdate: ''
   };
 
-  const handleSubmit = (formData) => {
-    console.log('Formulär är giltigt:', formData);
-    // Här kan du skicka data till servern
+  const {
+    formData,
+    errors,
+    setFormData,
+    setErrors,
+    handleChange,
+    handleSubmit: handleFormSubmit,
+  } = useFormValidation(initialValues, formSectionValidationRules, handleSubmit);
+
+  const normalizeSystemAccessId = (access) => {
+    const rawId = access?.id ?? access?.systemAccessId ?? access?.systemId ?? null;
+    if (rawId === null || rawId === undefined) return null;
+
+    const rawString = String(rawId).trim();
+    if (!rawString) return null;
+
+    const numericId = Number(rawString);
+    return Number.isFinite(numericId) ? numericId : rawString;
   };
 
-  const { formData, errors, handleChange, handleSubmit: handleFormSubmit } = 
-    useFormValidation(initialValues, formSectionValidationRules, handleSubmit);
+  async function handleSubmit(formData) {
+    if (isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+      setErrorMessage(null);
+      setSuccessMessage(null);
+
+      // Match CreateCaseDTO contract from backend.
+      const accounts = accesses
+        .map(normalizeSystemAccessId)
+        .filter((systemAccessId) => systemAccessId !== null)
+        .map((systemAccessId) => ({
+          systemAccessId,
+          status: 0,
+        }));
+
+      const isoStartDate = formData.startdate
+        ? new Date(`${formData.startdate}T00:00:00`).toISOString()
+        : new Date().toISOString();
+
+      const isoEmploymentDate = formData.employmentdate
+        ? new Date(`${formData.employmentdate}T00:00:00`).toISOString()
+        : new Date().toISOString();
+
+      const casePayload = {
+        employee: {
+          firstName: formData.firstname.trim(),
+          lastName: formData.lastname.trim(),
+          title: formData.jobtitle.trim(),
+          personalId: formData.personalnumber.trim(),
+          phoneNumber: formData.mobile.trim(),
+          company: companyMap[formData.company] ?? 0,
+          department: formData.department.trim(),
+          startDate: isoStartDate,
+          endDate: type === "offboarding" ? isoEmploymentDate : null,
+          dateOfEmployment: isoEmploymentDate,
+          accounts,
+        },
+        type: typeValue,
+        status: statusValue,
+        createdByUser,
+      };
+
+      console.log('Sending payload:', casePayload);
+
+      await caseService.createCase(casePayload);
+      setSuccessMessage("Ärende skapad framgångsrikt");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      
+        // Reset form state after successful submit
+        setFormData(initialValues);
+        setErrors({});
+      setAccesses([]);
+    } catch (error) {
+      console.error('Error creating case:', error);
+      console.error('Response data:', error.data);
+      
+      // Format validation errors from backend
+      if (error.data?.errors) {
+        const fieldErrors = Object.entries(error.data.errors)
+          .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
+          .join('\n');
+        console.error('Field validation errors:', fieldErrors);
+      }
+
+      setErrorMessage("Kunde inte skapa case");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <div className="form-section">
-      <form onSubmit={handleFormSubmit}>
+      {successMessage && (
+        <div style={{
+          padding: '1rem',
+          backgroundColor: '#d4edda',
+          color: '#155724',
+          borderRadius: '4px',
+          marginBottom: '1rem'
+        }}>
+          {successMessage}
+        </div>
+      )}
+
+      {errorMessage && (
+        <div style={{
+          padding: '1rem',
+          backgroundColor: '#f8d7da',
+          color: '#721c24',
+          borderRadius: '4px',
+          marginBottom: '1rem'
+        }}>
+          {errorMessage}
+        </div>
+      )}
+
+      <form ref={ref} onSubmit={handleFormSubmit}>
 
         <div className="form-info">
 
@@ -160,9 +301,20 @@ function FormSection() {
         
         <SystemAccessList accesses={accesses} setAccesses={setAccesses} />
 
+        <div className="submit">
+          <button
+            type="submit"
+            className="submit-btn"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "⏳ Skickar ärenden..." : "Skicka ärende"}
+          </button>
+        </div>
       </form>
     </div>
   );
-}
+});
+
+FormSection.displayName = 'FormSection';
 
 export default FormSection;

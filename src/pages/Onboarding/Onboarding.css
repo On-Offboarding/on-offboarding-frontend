@@ -2,9 +2,8 @@
    WRAPPER
 =========================== */
 .form-wrapper {
- /* position: relative; */
   margin: 0 auto;
-  padding: var(--spacing-2xl) var(--spacing-lg);
+  /* padding: var(--spacing-2xl) var(--spacing-lg); */
 }
 
 .form-title {
@@ -122,14 +121,17 @@
   .mark-all{
     padding: .8rem 1rem;
   }
+
 }
+
+
 
 .systemAccess-btn{
   display: flex;
-  gap: 8px;
+  flex-direction: row;
+  gap: .5rem;
   align-items: center;
-  flex-wrap: wrap;
-  padding: .8rem;
+
 }
 
 /* Profile Dropdown */

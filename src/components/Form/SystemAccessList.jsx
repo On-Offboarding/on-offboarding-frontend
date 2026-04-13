@@ -1,46 +1,198 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { systemAccessService } from "../../Api";
 
-const systems = [
-  "Office 365", "CreditSafe", "UC", "Coface", "Allianz", "HubSpot",
-  "Scrive","Metabase", "Zapier","Databox", "Ekopost", "Keeros", "Nord Corp.Netbank",
-  "Finansia App", "Fortnox Integration", "Fortnox", "Rival(AgeraPay)", "Google Ads",
-  "Facebook Page", "Instagram Business", "Zendesk","Intercom", "Tellit Växel/Telefoni",
-  "Bria Teams", "Tellit Tech (Telefoni)"
-];
+const getSystemId = (system) => {
+  if (typeof system === "string") return null;
+  return system?.id ?? system?.systemAccessId ?? system?.systemId ?? null;
+};
 
-function SystemAccessList({ accesses, setAccesses, profiles }) {
+const getSystemName = (system) => {
+  if (typeof system === "string") return system;
+  return system?.name || system?.systemName || system?.title || "";
+};
+
+const normalizeSystem = (system) => ({
+  ...(typeof system === "object" && system ? system : {}),
+  id: getSystemId(system),
+  name: getSystemName(system),
+});
+
+const isSameSystem = (a, b) => {
+  if (a?.id != null && b?.id != null) {
+    return String(a.id) === String(b.id);
+  }
+  return a?.name === b?.name;
+};
+
+const getProfileId = (profile) => profile?.id || profile?.profileId || profile?.value;
+
+const getProfileName = (profile) =>
+  profile?.name || profile?.profileName || profile?.title || String(getProfileId(profile) || "");
+
+const getSystemsFromProfile = (profile) => {
+  const rawSystems =
+    profile?.systems ||
+    profile?.systemAccesses ||
+    profile?.accesses ||
+    profile?.accounts ||
+    [];
+
+  if (!Array.isArray(rawSystems)) return [];
+
+  return rawSystems
+    .map((item) => {
+      const candidate = item?.systemAccess || item?.system || item;
+      return normalizeSystem(candidate);
+    })
+    .filter((system) => Boolean(system.name));
+};
+
+const profileRelationMatches = (relationItem, profileId) => {
+  if (!relationItem) return false;
+
+  if (typeof relationItem === "number" || typeof relationItem === "string") {
+    return String(relationItem) === String(profileId);
+  }
+
+  const relationId = relationItem?.id ?? relationItem?.profileId ?? relationItem?.value;
+  return relationId != null && String(relationId) === String(profileId);
+};
+
+const getSystemsForProfileFromCatalog = (allSystems, profileId) => {
+  if (!profileId || !Array.isArray(allSystems)) return [];
+
+  return allSystems.filter((system) => {
+    const directProfileId = system?.profileId ?? system?.profile?.id;
+    if (directProfileId != null && String(directProfileId) === String(profileId)) {
+      return true;
+    }
+
+    if (Array.isArray(system?.profileIds) && system.profileIds.some((id) => String(id) === String(profileId))) {
+      return true;
+    }
+
+    if (typeof system?.profileIds === "string") {
+      const parsedIds = system.profileIds
+        .split(",")
+        .map((id) => id.trim())
+        .filter(Boolean);
+      if (parsedIds.some((id) => String(id) === String(profileId))) {
+        return true;
+      }
+    }
+
+    if (Array.isArray(system?.profiles) && system.profiles.some((item) => profileRelationMatches(item, profileId))) {
+      return true;
+    }
+
+    return false;
+  });
+};
+
+const toCanonicalSystems = (profileSystems, allSystems) => {
+  if (!Array.isArray(profileSystems) || !Array.isArray(allSystems)) return [];
+
+  return profileSystems
+    .map((profileSystem) => {
+      const byId = profileSystem?.id != null
+        ? allSystems.find((candidate) => String(candidate.id) === String(profileSystem.id))
+        : null;
+
+      if (byId) return byId;
+
+      const byName = profileSystem?.name
+        ? allSystems.find((candidate) => candidate.name === profileSystem.name)
+        : null;
+
+      return byName || profileSystem;
+    })
+    .filter((system) => Boolean(system?.name));
+};
+
+function SystemAccessList({ accesses, setAccesses, initialSelectedProfile = null }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedProfile, setSelectedProfile] = useState("");
-  // Default profiles for development — you can pass real `profiles` prop later
-  const defaultProfiles = {
-    "Säljare": ["Office 365", "Tellit Tech (Telefoni)", "Callmaker", "Bria Teams"],
-    "Handläggare": [
-      "Office 365",
-      "Tellit Växel/Telefoni",
-      "Intercom",
-      "Coface",
-      "CreditSafe",
-      "Allianz",
-      "Keeros",
-      "Zendesk",
-      "KÄK",
-      "Ekopost",
-    ],
-    "Inkassohandläggare": ["Office 365", "Rival(AgeraPay)", "Tellit Växel/Telefoni"],
-  };
+  const [selectedProfile, setSelectedProfile] = useState(initialSelectedProfile || null);
+  const [profiles, setProfiles] = useState([]);
+  const [systems, setSystems] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const profileMap = profiles || defaultProfiles;
+  useEffect(() => {
+    let isMounted = true;
 
-  const handleProfileSelect = (key) => {
-    setSelectedProfile(key);
+    const loadData = async () => {
+      try {
+        setErrorMessage("");
+        const [profilesResponse, systemsResponse] = await Promise.all([
+          systemAccessService.getAllProfiles(),
+          systemAccessService.getAllSystems(),
+        ]);
+
+        if (!isMounted) return;
+
+        const loadedProfiles = Array.isArray(profilesResponse) ? profilesResponse : [];
+        const loadedSystems = (Array.isArray(systemsResponse) ? systemsResponse : [])
+          .map(normalizeSystem)
+          .filter((system) => Boolean(system.name));
+
+        setProfiles(loadedProfiles);
+        setSystems(loadedSystems);
+      } catch (error) {
+        if (!isMounted) return;
+        setErrorMessage(error.message || "Kunde inte hämta system/profiler");
+      }
+    };
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleProfileSelect = (profile) => {
+    setSelectedProfile(profile);
     setIsDropdownOpen(false);
-    if (!key) return setAccesses([]);
-    const mapped = (profileMap[key] || []).filter((s) => systems.includes(s));
-    setAccesses(mapped);
+
+    if (!profile) {
+      setErrorMessage("");
+      setAccesses([]);
+      return;
+    }
+
+    const profileId = getProfileId(profile);
+    if (!profileId) {
+      setErrorMessage("");
+      setAccesses([]);
+      return;
+    }
+
+    const profileSystemsFromProfile = getSystemsFromProfile(profile);
+    const profileSystemsFromCatalog = getSystemsForProfileFromCatalog(systems, profileId);
+
+    const profileSystems = profileSystemsFromProfile.length
+      ? toCanonicalSystems(profileSystemsFromProfile, systems)
+      : profileSystemsFromCatalog;
+
+    if (!profileSystems.length) {
+      setErrorMessage("Profilen saknar kopplade system. Välj system manuellt.");
+      setAccesses([]);
+      return;
+    }
+
+    const systemsWithoutId = profileSystems.some((system) => system?.id == null);
+    if (systemsWithoutId) {
+      setErrorMessage("Vissa system saknar ID och kan därför inte sparas korrekt.");
+    } else {
+      setErrorMessage("");
+    }
+
+    setAccesses(profileSystems);
   };
 
   const toggleAll = (e) => {
     e.preventDefault();
+    if (!systems.length) return;
+
     if (accesses.length === systems.length) {
       setAccesses([]);
     } else {
@@ -49,8 +201,8 @@ function SystemAccessList({ accesses, setAccesses, profiles }) {
   };
 
   const toggleOne = (item) => {
-    if (accesses.includes(item)) {
-      setAccesses(accesses.filter(x => x !== item));
+    if (accesses.some((access) => isSameSystem(access, item))) {
+      setAccesses(accesses.filter((access) => !isSameSystem(access, item)));
     } else {
       setAccesses([...accesses, item]);
     }
@@ -63,13 +215,14 @@ function SystemAccessList({ accesses, setAccesses, profiles }) {
         <div className="systemAccess-btn">
           <div className="profile-dropdown-wrapper">
             <button
+              type="button"
               className="profile-dropdown-trigger"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               aria-haspopup="listbox"
               aria-expanded={isDropdownOpen}
             >
               <span className="dropdown-text">
-                {selectedProfile ? selectedProfile : "Välj profil..."}
+                {selectedProfile ? getProfileName(selectedProfile) : "Välj profil..."}
               </span>
               <i 
                 className={`fa-solid fa-chevron-down dropdown-icon ${isDropdownOpen ? "open" : ""}`}
@@ -82,39 +235,50 @@ function SystemAccessList({ accesses, setAccesses, profiles }) {
                 <li>
                   <span
                     className={`profile-option ${!selectedProfile ? "selected" : ""}`}
-                    onClick={() => handleProfileSelect("")}
+                    onClick={() => handleProfileSelect(null)}
                     role="option"
                     aria-selected={!selectedProfile}
                   >
                     Välj profil...
                   </span>
                 </li>
-                {Object.keys(profileMap).map((p) => (
-                  <li key={p}>
+                {profiles.map((profile) => {
+                  const profileId = getProfileId(profile);
+                  const profileName = getProfileName(profile);
+
+                  return (
+                  <li key={profileId || profileName}>
                     <span
-                      className={`profile-option ${selectedProfile === p ? "selected" : ""}`}
-                      onClick={() => handleProfileSelect(p)}
+                      className={`profile-option ${getProfileId(selectedProfile) === profileId ? "selected" : ""}`}
+                      onClick={() => handleProfileSelect(profile)}
                       role="option"
-                      aria-selected={selectedProfile === p}
+                      aria-selected={getProfileId(selectedProfile) === profileId}
                     >
-                      {p}
+                      {profileName}
                     </span>
                   </li>
-                ))}
+                );
+                })}
               </ul>
             )}
           </div>
           <button type="button" className="mark-all" onClick={toggleAll}>
-            {accesses.length === systems.length ? "Avmarkera alla" : "Markera alla"}
+            {systems.length > 0 && accesses.length === systems.length ? "Avmarkera alla" : "Markera alla"}
           </button>
         </div>
       </div>
 
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+
       <div className="system-list">
         {systems.map((sys) => (
-          <label key={sys} className="checkbox-item">
-            <input type="checkbox" checked={accesses.includes(sys)} onChange={() => toggleOne(sys)} />
-            {sys}
+          <label key={sys.id ?? sys.name} className="checkbox-item">
+            <input
+              type="checkbox"
+              checked={accesses.some((access) => isSameSystem(access, sys))}
+              onChange={() => toggleOne(sys)}
+            />
+            {sys.name}
           </label>
         ))}
       </div>

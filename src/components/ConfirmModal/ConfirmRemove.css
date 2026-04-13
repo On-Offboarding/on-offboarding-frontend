@@ -47,8 +47,37 @@
 ================================ */
 .modal-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.modal-end-date {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.modal-end-date label {
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  color: #374151;
+}
+
+.modal-end-date input[type="date"] {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #b7b6b6;
+  border-radius: var(--border-radius-md);
+  font-size: 14px;
+  background: var(--color-bg-white);
+  cursor: pointer;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
 }
 
 .btn-secondary {
@@ -56,15 +85,15 @@
   border: 1px solid #b7b6b6;
   border-radius: var(--border-radius-md);
   padding: 0.8rem var(--btn-padding-sm);
-  margin-top: var(--spacing-lg);
   cursor: pointer;
   font-size: 15px;
+  margin-top: var(--spacing-lg);
 }
 
 .btn-secondary:hover {
   background-color: var(--color-bg-light);
 }
 
-.fa-trash-can {
-  margin-right: var(--spacing-sm);
+.fa-user-minus {
+  margin-right: var(--spacing-md);
 }
