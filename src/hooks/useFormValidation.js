@@ -11,12 +11,12 @@ export const useFormValidation = (initialValues, validationRules, onSubmit) => {
   const [formData, setFormData] = useState(initialValues);
   const [errors, setErrors] = useState({});
 
-  const validateField = (fieldName, value) => {
+  const validateField = (fieldName, value, data = formData) => {
     const rules = validationRules[fieldName];
     if (!rules) return null;
 
     for (const rule of rules) {
-      if (!rule.validate(value)) {
+      if (!rule.validate(value, data)) {
         return rule.message;
       }
     }

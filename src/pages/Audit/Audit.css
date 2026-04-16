@@ -72,6 +72,15 @@
   gap: var(--spacing-lg);
 }
 
+.audit-message {
+  color: var(--color-text-tertiary);
+  margin: 0;
+}
+
+.audit-error {
+  color: #b42318;
+}
+
 .audit-entry {
   padding: var(--spacing-lg);
   border: 1px solid var(--color-border-lighter);

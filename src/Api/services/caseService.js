@@ -21,4 +21,16 @@ async function deleteCase(id) {
   return httpClient.delete(ENDPOINTS.CASES.DELETE(id));
 }
 
-export { getAllCases, getCaseById, createCase, updateCase, deleteCase };
+async function exportCaseToPdf(id) {
+  const blob = await httpClient.getBlob(ENDPOINTS.CASES.EXPORT(id));
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Behörighetsrapport.pdf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+export { getAllCases, getCaseById, createCase, updateCase, deleteCase, exportCaseToPdf };

@@ -3,28 +3,9 @@ import ToggleType from "../../components/Form/ToggleType";
 import OffboardingCard from "../../components/Cards/OffboardingCard";
 import SearchBar from "../../components/UI/SearchBar";
 import { caseService, employeeService } from "../../Api";
+import { HARDCODED_CREATED_BY_USER } from "../../Api/config";
+import { getCompanyLabel, getCompanyValue } from "../../utils/company";
 import "./Offboarding.css";
-
-const COMPANY_ENUM = {
-  unknown: 0,
-  finansia: 1,
-  agency: 2,
-};
-
-const getCompanyValue = (company) => {
-  if (typeof company === "number") return company;
-  if (typeof company !== "string") return 0;
-
-  const normalized = company.toLowerCase();
-  return COMPANY_ENUM[normalized] ?? 0;
-};
-
-const getCompanyLabel = (company) => {
-  if (typeof company === "string") return company;
-  if (company === 1) return "Finansia";
-  if (company === 2) return "Agency";
-  return "Unknown";
-};
 
 const extractList = (response) => {
   if (Array.isArray(response)) return response;
@@ -233,7 +214,7 @@ function Offboarding() {
         },
         type: 2,
         status: 1,
-        createdByUser: 0,
+        createdByUser: HARDCODED_CREATED_BY_USER,
       };
 
       console.log('Offboarding case payload:', casePayload);

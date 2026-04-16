@@ -44,6 +44,25 @@ class HttpClient {
     }
   }
 
+  async requestBlob(method, endpoint, options = {}) {
+    const url = `${API_BASE_URL}${endpoint}`;
+    const config = {
+      method,
+      signal: AbortSignal.timeout(API_TIMEOUT),
+      ...options,
+    };
+
+    const response = await fetch(url, config);
+    if (!response.ok) {
+      throw new HttpError(response.status, `HTTP ${response.status}`);
+    }
+    return response.blob();
+  }
+
+  getBlob(endpoint, options) {
+    return this.requestBlob('GET', endpoint, options);
+  }
+
   get(endpoint, options) {
     return this.request('GET', endpoint, null, options);
   }

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './CaseCard.css';
 import SystemAccessList from '../Form/SystemAccessList';
 import { caseService } from '../../Api';
+import { HARDCODED_CREATED_BY_USER } from '../../Api/config';
+import { getCompanyValue } from '../../utils/company';
 
 
 const STATUS_LABELS = {
@@ -16,6 +18,19 @@ const STATUS_VALUES = {
   completed: 3,
 };
 
+const TYPE_VALUES = {
+  onboarding: 1,
+  offboarding: 2,
+};
+
+const toTypeEnum = (value, fallbackLabel) => {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+
+  const normalized = String(value || fallbackLabel || '').toLowerCase();
+  return TYPE_VALUES[normalized] ?? 1;
+};
 
 const TYPE_LABELS = {
   "onboarding": "Onboarding",
@@ -60,6 +75,40 @@ const normalizeAccess = (access) => {
   };
 };
 
+const toIsoDateTime = (value) => {
+  if (!value) return new Date().toISOString();
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return new Date().toISOString();
+
+  return parsed.toISOString();
+};
+
+const toNullableIsoDateTime = (value) => {
+  if (!value || value === '-') return null;
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+
+  return parsed.toISOString();
+};
+
+const toCompanyEnum = (value) => {
+  return getCompanyValue(value);
+};
+
+const toAccountDto = (access) => {
+  const systemAccessId = access?.systemAccessId ?? access?.id ?? access?.systemId ?? null;
+  if (systemAccessId === null || systemAccessId === undefined) return null;
+
+  const normalizedId = Number(systemAccessId);
+
+  return {
+    systemAccessId: Number.isFinite(normalizedId) ? normalizedId : systemAccessId,
+    status: access?.status ?? 0,
+  };
+};
+
 function CaseCard({
   employee,
   onStatusUpdate,
@@ -70,11 +119,11 @@ function CaseCard({
   const [accesses, setAccesses] = useState([]);
   const [localStatus, setLocalStatus] = useState(employee?.status || 'pending');
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [actionError, setActionError] = useState(null);
   const displayName = employee?.name || '-';
   const displayType = employee?.type || '-';
   const systemAccessCount = employee?.systemAccessCount ?? 0;
-  const selectedProfileName = employee?.selectedProfileName || employee?.profileName || '-';
 
   const detailItems = [
     { label: "Personnummer", value: employee?.personalId },
@@ -85,7 +134,6 @@ function CaseCard({
     { label: "Startdatum", value: formatDate(employee?.startDate) },
     { label: "Slutdatum", value: formatDate(employee?.endDate) },
     { label: "Anställningsdag", value: formatDate(employee?.dateOfEmployment) },
-    { label: "Profil", value: selectedProfileName },
   ].filter((item) => hasDisplayValue(item.value));
 
   const splitIndex = Math.ceil(detailItems.length / 2);
@@ -110,7 +158,43 @@ function CaseCard({
     try {
       setIsUpdating(true);
       setActionError(null);
-      await caseService.updateCase(employee.id, { status: STATUS_VALUES[nextStatus] });
+
+      const fullCase = await caseService.getCaseById(employee.id);
+      const sourceCase = fullCase || {};
+      const sourceEmployee = sourceCase?.employee || employee?.employee || {};
+      const personalId = (sourceEmployee.personalId ?? employee.personalId ?? '').trim();
+      const createdByUser = HARDCODED_CREATED_BY_USER;
+
+      if (!personalId) {
+        setActionError('PersonalId saknas för ärendet och kan inte uppdateras.');
+        return false;
+      }
+
+      const caseDto = {
+        id: Number(employee.id),
+        employee: {
+          id: Number(sourceEmployee.id ?? employee.employeeId ?? employee.id ?? 0),
+          firstName: sourceEmployee.firstName ?? sourceCase.firstName ?? employee.firstName ?? '',
+          lastName: sourceEmployee.lastName ?? sourceCase.lastName ?? employee.lastName ?? '',
+          title: sourceEmployee.title ?? sourceCase.title ?? employee.title ?? '',
+          personalId,
+          phoneNumber: sourceEmployee.phoneNumber ?? sourceCase.phoneNumber ?? employee.phoneNumber ?? '',
+          company: toCompanyEnum(sourceEmployee.company ?? employee.company),
+          department: sourceEmployee.department ?? employee.department ?? '',
+          startDate: toIsoDateTime(sourceEmployee.startDate ?? employee.startDate),
+          endDate: toNullableIsoDateTime(sourceEmployee.endDate ?? employee.endDate),
+          dateOfEmployment: toIsoDateTime(sourceEmployee.dateOfEmployment ?? employee.dateOfEmployment),
+          accounts: (Array.isArray(sourceEmployee.accounts) ? sourceEmployee.accounts : accesses)
+            .map(toAccountDto)
+            .filter((account) => account !== null),
+        },
+        type: toTypeEnum(sourceCase.type ?? employee.type, displayType),
+        status: STATUS_VALUES[nextStatus],
+        createdByUser,
+      };
+
+      console.log('Data som skickas:', caseDto);
+      await caseService.updateCase(employee.id, caseDto);
       setLocalStatus(nextStatus);
       if (onStatusUpdate) {
         onStatusUpdate(employee.id, nextStatus);
@@ -118,6 +202,7 @@ function CaseCard({
       return true;
     } catch (error) {
       console.error('Error updating case status:', error);
+      console.error('Validation details:', error?.data);
       setActionError(error.message || 'Fel vid uppdatering av ärendet');
       return false;
     } finally {
@@ -125,12 +210,19 @@ function CaseCard({
     }
   };
 
-  const handleShowAccess = async () => {
-    if (localStatus === 'pending') {
-      const updated = await updateCaseStatus('in-progress');
-      if (!updated) return;
+  const handleExport = async () => {
+    if (!employee?.id) return;
+    try {
+      setIsExporting(true);
+      await caseService.exportCaseToPdf(employee.id);
+    } catch {
+      setActionError('Fel vid export av PDF');
+    } finally {
+      setIsExporting(false);
     }
+  };
 
+  const handleShowAccess = () => {
     setShowAccess(true);
   };
 
@@ -153,9 +245,9 @@ function CaseCard({
               <div className="name-export">
                 <h3>{displayName}</h3>
                 <div className="export">
-                  <button className='export-btn'>
+                  <button className='export-btn' onClick={handleExport} disabled={isExporting}>
                     <i className="fa-solid fa-file-export"></i>
-                    <span>Exportera</span>
+                    <span>{isExporting ? 'Exporterar...' : 'Exportera'}</span>
                   </button>
                 </div>
 
@@ -208,9 +300,8 @@ function CaseCard({
             <button
               className="view-case-btn"
               onClick={handleShowAccess}
-              disabled={isUpdating}
             >
-              {isUpdating ? '⏳ Uppdaterar...' : 'Visa Systemåtkomster'}
+              Visa Systemåtkomster
             </button>
           </div>
         </div>

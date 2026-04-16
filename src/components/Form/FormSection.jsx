@@ -1,10 +1,26 @@
 import { useEffect, useState, forwardRef } from "react";
 import { useFormValidation } from "../../hooks/useFormValidation";
-import { formSectionValidationRules } from "../../utils/validators";
+import { getFormSectionValidationRules } from "../../utils/validators";
+import { COMPANY_OPTIONS, getCompanyValue } from "../../utils/company";
+import { HARDCODED_CREATED_BY_USER } from "../../Api/config";
 import SystemAccessList from "../../components/Form/SystemAccessList";
 import { caseService } from "../../Api";
 import "../Form/FormSection.css";
 
+const INITIAL_VALUES = {
+  firstname: '',
+  lastname: '',
+  personalnumber: '',
+  mobile: '',
+  company: '',
+  department: '',
+  jobtitle: '',
+  startdate: '',
+  enddate: '',
+  employmentdate: ''
+};
+
+const VALID_TYPES = new Set(["onboarding", "offboarding"]);
 
 
 const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
@@ -12,6 +28,7 @@ const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const normalizedType = VALID_TYPES.has(type) ? type : "onboarding";
 
   useEffect(() => {
     if (!successMessage) return undefined;
@@ -33,35 +50,9 @@ const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
     return () => clearTimeout(timerId);
   }, [errorMessage]);
 
-  const typeValue = type === "offboarding" ? 2 : 1;
+  const typeValue = normalizedType === "offboarding" ? 2 : 1;
   const statusValue = 1;
-  const createdByUser = 0;
-
-  const companyMap = {
-    finansia: 1,
-    agency: 2,
-  };
-
-  const initialValues = {
-    firstname: '',
-    lastname: '',
-    personalnumber: '',
-    mobile: '',
-    company: '',
-    department: '',
-    jobtitle: '',
-    startdate: '',
-    employmentdate: ''
-  };
-
-  const {
-    formData,
-    errors,
-    setFormData,
-    setErrors,
-    handleChange,
-    handleSubmit: handleFormSubmit,
-  } = useFormValidation(initialValues, formSectionValidationRules, handleSubmit);
+  const createdByUser = HARDCODED_CREATED_BY_USER;
 
   const normalizeSystemAccessId = (access) => {
     const rawId = access?.id ?? access?.systemAccessId ?? access?.systemId ?? null;
@@ -74,7 +65,7 @@ const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
     return Number.isFinite(numericId) ? numericId : rawString;
   };
 
-  async function handleSubmit(formData) {
+  const handleSubmit = async (formData) => {
     if (isSubmitting) return;
 
     try {
@@ -99,6 +90,10 @@ const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
         ? new Date(`${formData.employmentdate}T00:00:00`).toISOString()
         : new Date().toISOString();
 
+      const isoEndDate = formData.enddate
+        ? new Date(`${formData.enddate}T00:00:00`).toISOString()
+        : null;
+
       const casePayload = {
         employee: {
           firstName: formData.firstname.trim(),
@@ -106,10 +101,10 @@ const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
           title: formData.jobtitle.trim(),
           personalId: formData.personalnumber.trim(),
           phoneNumber: formData.mobile.trim(),
-          company: companyMap[formData.company] ?? 0,
+          company: getCompanyValue(formData.company),
           department: formData.department.trim(),
           startDate: isoStartDate,
-          endDate: type === "offboarding" ? isoEmploymentDate : null,
+          endDate: normalizedType === "offboarding" ? isoEndDate : null,
           dateOfEmployment: isoEmploymentDate,
           accounts,
         },
@@ -118,56 +113,40 @@ const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
         createdByUser,
       };
 
-      console.log('Sending payload:', casePayload);
-
       await caseService.createCase(casePayload);
       setSuccessMessage("Ärende skapad framgångsrikt");
       window.scrollTo({ top: 0, behavior: "smooth" });
       
         // Reset form state after successful submit
-        setFormData(initialValues);
+        setFormData(INITIAL_VALUES);
         setErrors({});
       setAccesses([]);
-    } catch (error) {
-      console.error('Error creating case:', error);
-      console.error('Response data:', error.data);
-      
-      // Format validation errors from backend
-      if (error.data?.errors) {
-        const fieldErrors = Object.entries(error.data.errors)
-          .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
-          .join('\n');
-        console.error('Field validation errors:', fieldErrors);
-      }
-
+    } catch {
       setErrorMessage("Kunde inte skapa case");
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
+
+  const {
+    formData,
+    errors,
+    setFormData,
+    setErrors,
+    handleChange,
+    handleSubmit: handleFormSubmit,
+  } = useFormValidation(INITIAL_VALUES, getFormSectionValidationRules(normalizedType), handleSubmit);
 
   return (
     <div className="form-section">
       {successMessage && (
-        <div style={{
-          padding: '1rem',
-          backgroundColor: '#d4edda',
-          color: '#155724',
-          borderRadius: '4px',
-          marginBottom: '1rem'
-        }}>
+        <div className="form-alert form-alert-success">
           {successMessage}
         </div>
       )}
 
       {errorMessage && (
-        <div style={{
-          padding: '1rem',
-          backgroundColor: '#f8d7da',
-          color: '#721c24',
-          borderRadius: '4px',
-          marginBottom: '1rem'
-        }}>
+        <div className="form-alert form-alert-error">
           {errorMessage}
         </div>
       )}
@@ -237,8 +216,9 @@ const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
               onChange={handleChange}
             >
               <option value="">Välj företag</option>
-              <option value="finansia">Finansia</option>
-              <option value="agency">Agency</option>
+              {COMPANY_OPTIONS.map((companyOption) => (
+                <option key={companyOption.value} value={companyOption.value}>{companyOption.label}</option>
+              ))}
             </select>
             {errors.company && <span className="error-message">{errors.company}</span>}
           </div>
@@ -286,6 +266,20 @@ const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
 
         </div>
 
+        {normalizedType === "offboarding" && (
+          <div className="form-group">
+            <label htmlFor="enddate">Slutdatum</label>
+            <input
+              type="date"
+              id="enddate"
+              name="enddate"
+              value={formData.enddate}
+              onChange={handleChange}
+            />
+            {errors.enddate && <span className="error-message">{errors.enddate}</span>}
+          </div>
+        )}
+
         <div className="form-group">
           <label htmlFor="employmentdate">Anställningsdag</label>
           <input 
@@ -307,7 +301,7 @@ const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
             className="submit-btn"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "⏳ Skickar ärenden..." : "Skicka ärende"}
+            {isSubmitting ? "Skickar ärenden..." : "Skicka ärende"}
           </button>
         </div>
       </form>

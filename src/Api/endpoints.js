@@ -11,7 +11,7 @@ export const ENDPOINTS = {
     GET_BY_ID: (id) => `/Api/Case/Get/${id}`,
     CREATE: '/Api/Case/Create',
     UPDATE: '/Api/Case/Update',
-    DELETE: (id) => `/Api/Case/Delete/${id}`,
+    EXPORT: (id) => `/Api/Case/Export/${id}`,
   },
 
   // System Access endpoints
@@ -30,6 +30,11 @@ export const ENDPOINTS = {
   USER: {
     GET_ALL: '/Api/User/GetAll',
     GET_BY_ID: (id) => `/Api/User/Get/${id}`,
+  },
+
+  // Audit endpoints
+  AUDIT: {
+    GET_ALL: '/Api/Audit/GetAll',
   },
 };
 
