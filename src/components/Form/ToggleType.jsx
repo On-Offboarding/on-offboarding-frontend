@@ -25,13 +25,13 @@ function ToggleType({ type, setType }) {
           className={`toggle-btn ${type === "onboarding" ? "active" : ""}`}
           onClick={() => handleSet("onboarding")}
         >
-          <i class="fa-solid fa-user-plus user-plus"></i> Onboarding
+          <i className="fa-solid fa-user-plus user-plus"></i> Onboarding
         </button>
 
         <button
           className={`toggle-btn offboarding-btn ${type === "offboarding" ? "active" : ""}`}
           onClick={() => handleSet("offboarding")}
-        > <i class="fa-solid fa-user-minus users-icon"></i> Offboarding
+        > <i className="fa-solid fa-user-minus users-icon"></i> Offboarding
         </button>
       </div>
     

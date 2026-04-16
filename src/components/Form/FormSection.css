@@ -21,6 +21,22 @@
   gap: var(--spacing-lg);
 }
 
+.form-alert {
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.form-alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.form-alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
 @media (min-width: 600px){
 .form-info{
   display: grid;

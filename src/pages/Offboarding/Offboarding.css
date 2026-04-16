@@ -61,7 +61,7 @@
 
 .remove-btn {
   width: 100%;
-  background: #ff4444;
+  background: #6c757d;
   color: var(--color-status-text-light);
   border: none;
   border-radius: var(--border-radius-md);
@@ -72,8 +72,24 @@
 }
 
 .remove-btn:hover {
-  background: #e03535;
+  background: #5a6268;
 } 
+
+.offboarding-action-btn {
+  width: 100%;
+  background: #6c757d;
+  color: var(--color-status-text-light);
+  border: none;
+  border-radius: var(--border-radius-md);
+  padding: 0.8rem var(--btn-padding-sm);
+  margin-top: var(--spacing-lg);
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.offboarding-action-btn:hover {
+  background: #5a6268;
+}
 
 @media (min-width: 600px){
 
@@ -92,6 +108,10 @@
     padding-inline: 2rem;
   }
   .remove-btn {
+    width: auto;
+  }
+
+  .offboarding-action-btn {
     width: auto;
   }
 }

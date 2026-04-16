@@ -33,18 +33,18 @@
 }
 
 .in-progress {
-  background-color: var(--color-status-info);
-  color: var(--color-status-text-light);
+  background-color: #0d6efd;
+  color: #ffffff;
 }
 
 .pending {
-  background-color: var(--color-status-warning);
-  color: var(--color-status-text-dark);
+  background-color: #aeaeae;
+  color: #ffffff;
 }
 
 .completed {
-  background-color: var(--color-status-success);
-  color: var(--color-status-text-light);
+  background-color: #198754;
+  color: #ffffff;
 }
 
 .type-label {
@@ -58,16 +58,19 @@
 ===================================================== */
 .case-card {
   position: relative;
-  margin-bottom: var(--spacing-4xl);
+  /* margin-bottom: var(--spacing-4xl); */
 }
 
 
 /* =====================================================
    ACTION BUTTON
 ===================================================== */
+.case-actions {
+  margin-top: var(--spacing-lg);
+  width: 100%;
+}
+
 .view-case-btn {
-  position: absolute;
-  bottom: calc(-1 * var(--spacing-4_5xl));
   width: 100%;
   padding: var(--spacing-lg);
   font-size: var(--btn-font-size);
@@ -89,6 +92,17 @@
   gap: var(--spacing-lg);
   width: 100%;
 }
+
+.case-error {
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+}
+
 .export{
   width: 100%;
 }

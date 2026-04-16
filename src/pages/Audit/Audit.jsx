@@ -1,13 +1,49 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import ProfileDropdown from '../../components/ProfileDropdown/ProfileDropdown'
 import Pagination from '../../components/UI/Pagination'
 import './Audit.css'
-import Nav from '../../components/Nav/Nav';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { auditService } from '../../Api';
+
+const formatTimestamp = (value) => {
+  if (!value) return '-';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+
+  return date.toLocaleString('sv-SE');
+};
+
+const getEntryTitle = (item) => {
+  return item?.title || item?.action || item?.eventType || item?.eventName || 'Audit-händelse';
+};
+
+const getEntryDescription = (item) => {
+  return item?.description || item?.details || item?.message || 'Ingen beskrivning tillgänglig';
+};
+
+const getEntryUser = (item) => {
+  return item?.user || item?.performedBy || item?.createdBy || item?.email || 'Okänd användare';
+};
+
+const getEntryTimestamp = (item) => {
+  return item?.timestamp || item?.createdAt || item?.date || item?.occurredAt || null;
+};
+
+const normalizeAuditEntry = (entry, index) => ({
+  id: entry?.id ?? entry?.auditId ?? entry?.logId ?? index,
+  title: getEntryTitle(entry),
+  description: getEntryDescription(entry),
+  user: getEntryUser(entry),
+  timestamp: formatTimestamp(getEntryTimestamp(entry)),
+});
 
 function Audit() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
+  const [auditEntries, setAuditEntries] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
   const itemsPerPage = 5;
 
   // Dummy user data 
@@ -16,84 +52,39 @@ function Audit() {
     role: 'Chef'
   };
 
-  // Dummy audit trail data
-  const auditEntries = [
-    {
-      id: 1,
-      title: 'Offboarding skapad',
-      description: 'Offboarding för Abdifatah Mahdi skapad',
-      user: 'chef@fnansia.se',
-      timestamp: '2025-12-08 08:56:43'
-    },
-    {
-      id: 2,
-      title: 'Offboarding skapad',
-      description: 'Offboarding för Abdifatah Mahdi skapad',
-      user: 'chef@fnansia.se',
-      timestamp: '2025-12-04 12:35:22'
-    },
-        {
-      id: 2,
-      title: 'Offboarding skapad',
-      description: 'Offboarding för Abdifatah Mahdi skapad',
-      user: 'chef@fnansia.se',
-      timestamp: '2025-12-04 12:35:22'
-    },
-        {
-      id: 2,
-      title: 'Offboarding skapad',
-      description: 'Offboarding för Abdifatah Mahdi skapad',
-      user: 'chef@fnansia.se',
-      timestamp: '2025-12-04 12:35:22'
-    },
-        {
-      id: 2,
-      title: 'Offboarding skapad',
-      description: 'Offboarding för Abdifatah Mahdi skapad',
-      user: 'chef@fnansia.se',
-      timestamp: '2025-12-04 12:35:22'
-    },
-        {
-      id: 2,
-      title: 'Offboarding skapad',
-      description: 'Offboarding för Abdifatah Mahdi skapad',
-      user: 'chef@fnansia.se',
-      timestamp: '2025-12-04 12:35:22'
-    },    {
-      id: 2,
-      title: 'Offboarding skapad',
-      description: 'Offboarding för Abdifatah Mahdi skapad',
-      user: 'chef@fnansia.se',
-      timestamp: '2025-12-04 12:35:22'
-    },
-        {
-      id: 2,
-      title: 'Offboarding skapad',
-      description: 'Offboarding för Abdifatah Mahdi skapad',
-      user: 'chef@fnansia.se',
-      timestamp: '2025-12-04 12:35:22'
-    },
-        {
-      id: 2,
-      title: 'Offboarding skapad',
-      description: 'Offboarding för Abdifatah Mahdi skapad',
-      user: 'chef@fnansia.se',
-      timestamp: '2025-12-04 12:35:22'
-    },
-        {
-      id: 2,
-      title: 'Offboarding skapad',
-      description: 'Offboarding för Abdifatah Mahdi skapad',
-      user: 'chef@fnansia.se',
-      timestamp: '2025-12-04 12:35:22'
-    },
-  ];
+  useEffect(() => {
+    const fetchAuditData = async () => {
+      try {
+        setIsLoading(true);
+        setError('');
+        const response = await auditService.getAllAudits();
+        const list = Array.isArray(response) ? response : [];
+        setAuditEntries(list.map((entry, index) => normalizeAuditEntry(entry, index)));
+      } catch (fetchError) {
+        console.error('Kunde inte hämta audit-loggar:', fetchError);
+        setError('Kunde inte hämta audit-loggar. Försök igen senare.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAuditData();
+  }, []);
 
   // Pagination logic
-  const totalPages = Math.ceil(auditEntries.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(auditEntries.length / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedEntries = auditEntries.slice(startIndex, endIndex);
+  const paginatedEntries = useMemo(
+    () => auditEntries.slice(startIndex, endIndex),
+    [auditEntries, startIndex, endIndex]
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -112,7 +103,7 @@ function Audit() {
 
         <div className='audit-header-content'>
           <button className='back-button' onClick={() => navigate(-1)}>
-            <i class="fa-solid fa-chevron-left"></i>
+            <i className="fa-solid fa-chevron-left"></i>
             Tillbaka till årenden
           </button>
         </div>
@@ -127,6 +118,12 @@ function Audit() {
             </div>
 
             <div className='audit-entries'>
+              {isLoading && <p className='audit-message'>Laddar audit-loggar...</p>}
+              {!isLoading && error && <p className='audit-message audit-error'>{error}</p>}
+              {!isLoading && !error && paginatedEntries.length === 0 && (
+                <p className='audit-message'>Inga audit-händelser hittades.</p>
+              )}
+
               {paginatedEntries.map((entry) => (
                 <div key={entry.id} className='audit-entry'>
                   <h3 className='entry-title'>{entry.title}</h3>
@@ -139,12 +136,14 @@ function Audit() {
               ))}
             </div>
 
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              itemsPerPage={itemsPerPage}
-            />
+            {!isLoading && !error && auditEntries.length > 0 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                itemsPerPage={itemsPerPage}
+              />
+            )}
           </section>
         </div>
       </main>

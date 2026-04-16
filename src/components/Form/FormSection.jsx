@@ -1,37 +1,157 @@
-import { useState } from "react";
+import { useEffect, useState, forwardRef } from "react";
 import { useFormValidation } from "../../hooks/useFormValidation";
-import { formSectionValidationRules } from "../../utils/validators";
+import { getFormSectionValidationRules } from "../../utils/validators";
+import { COMPANY_OPTIONS, getCompanyValue } from "../../utils/company";
+import { HARDCODED_CREATED_BY_USER } from "../../Api/config";
 import SystemAccessList from "../../components/Form/SystemAccessList";
+import { caseService } from "../../Api";
 import "../Form/FormSection.css";
 
+const INITIAL_VALUES = {
+  firstname: '',
+  lastname: '',
+  personalnumber: '',
+  mobile: '',
+  company: '',
+  department: '',
+  jobtitle: '',
+  startdate: '',
+  enddate: '',
+  employmentdate: ''
+};
+
+const VALID_TYPES = new Set(["onboarding", "offboarding"]);
 
 
-function FormSection() {
+const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
   const [accesses, setAccesses] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const normalizedType = VALID_TYPES.has(type) ? type : "onboarding";
 
-  const initialValues = {
-    firstname: '',
-    lastname: '',
-    personalnumber: '',
-    mobile: '',
-    company: '',
-    department: '',
-    jobtitle: '',
-    startdate: '',
-    employmentdate: ''
+  useEffect(() => {
+    if (!successMessage) return undefined;
+
+    const timerId = setTimeout(() => {
+      setSuccessMessage(null);
+    }, 5000);
+
+    return () => clearTimeout(timerId);
+  }, [successMessage]);
+
+  useEffect(() => {
+    if (!errorMessage) return undefined;
+
+    const timerId = setTimeout(() => {
+      setErrorMessage(null);
+    }, 5000);
+
+    return () => clearTimeout(timerId);
+  }, [errorMessage]);
+
+  const typeValue = normalizedType === "offboarding" ? 2 : 1;
+  const statusValue = 1;
+  const createdByUser = HARDCODED_CREATED_BY_USER;
+
+  const normalizeSystemAccessId = (access) => {
+    const rawId = access?.id ?? access?.systemAccessId ?? access?.systemId ?? null;
+    if (rawId === null || rawId === undefined) return null;
+
+    const rawString = String(rawId).trim();
+    if (!rawString) return null;
+
+    const numericId = Number(rawString);
+    return Number.isFinite(numericId) ? numericId : rawString;
   };
 
-  const handleSubmit = (formData) => {
-    console.log('Formulär är giltigt:', formData);
-    // Här kan du skicka data till servern
+  const handleSubmit = async (formData) => {
+    if (isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+      setErrorMessage(null);
+      setSuccessMessage(null);
+
+      // Match CreateCaseDTO contract from backend.
+      const accounts = accesses
+        .map(normalizeSystemAccessId)
+        .filter((systemAccessId) => systemAccessId !== null)
+        .map((systemAccessId) => ({
+          systemAccessId,
+          status: 0,
+        }));
+
+      const isoStartDate = formData.startdate
+        ? new Date(`${formData.startdate}T00:00:00`).toISOString()
+        : new Date().toISOString();
+
+      const isoEmploymentDate = formData.employmentdate
+        ? new Date(`${formData.employmentdate}T00:00:00`).toISOString()
+        : new Date().toISOString();
+
+      const isoEndDate = formData.enddate
+        ? new Date(`${formData.enddate}T00:00:00`).toISOString()
+        : null;
+
+      const casePayload = {
+        employee: {
+          firstName: formData.firstname.trim(),
+          lastName: formData.lastname.trim(),
+          title: formData.jobtitle.trim(),
+          personalId: formData.personalnumber.trim(),
+          phoneNumber: formData.mobile.trim(),
+          company: getCompanyValue(formData.company),
+          department: formData.department.trim(),
+          startDate: isoStartDate,
+          endDate: normalizedType === "offboarding" ? isoEndDate : null,
+          dateOfEmployment: isoEmploymentDate,
+          accounts,
+        },
+        type: typeValue,
+        status: statusValue,
+        createdByUser,
+      };
+
+      await caseService.createCase(casePayload);
+      setSuccessMessage("Ärende skapad framgångsrikt");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      
+        // Reset form state after successful submit
+        setFormData(INITIAL_VALUES);
+        setErrors({});
+      setAccesses([]);
+    } catch {
+      setErrorMessage("Kunde inte skapa case");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const { formData, errors, handleChange, handleSubmit: handleFormSubmit } = 
-    useFormValidation(initialValues, formSectionValidationRules, handleSubmit);
+  const {
+    formData,
+    errors,
+    setFormData,
+    setErrors,
+    handleChange,
+    handleSubmit: handleFormSubmit,
+  } = useFormValidation(INITIAL_VALUES, getFormSectionValidationRules(normalizedType), handleSubmit);
 
   return (
     <div className="form-section">
-      <form onSubmit={handleFormSubmit}>
+      {successMessage && (
+        <div className="form-alert form-alert-success">
+          {successMessage}
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="form-alert form-alert-error">
+          {errorMessage}
+        </div>
+      )}
+
+      <form ref={ref} onSubmit={handleFormSubmit}>
 
         <div className="form-info">
 
@@ -96,8 +216,9 @@ function FormSection() {
               onChange={handleChange}
             >
               <option value="">Välj företag</option>
-              <option value="finansia">Finansia</option>
-              <option value="agency">Agency</option>
+              {COMPANY_OPTIONS.map((companyOption) => (
+                <option key={companyOption.value} value={companyOption.value}>{companyOption.label}</option>
+              ))}
             </select>
             {errors.company && <span className="error-message">{errors.company}</span>}
           </div>
@@ -145,6 +266,20 @@ function FormSection() {
 
         </div>
 
+        {normalizedType === "offboarding" && (
+          <div className="form-group">
+            <label htmlFor="enddate">Slutdatum</label>
+            <input
+              type="date"
+              id="enddate"
+              name="enddate"
+              value={formData.enddate}
+              onChange={handleChange}
+            />
+            {errors.enddate && <span className="error-message">{errors.enddate}</span>}
+          </div>
+        )}
+
         <div className="form-group">
           <label htmlFor="employmentdate">Anställningsdag</label>
           <input 
@@ -160,9 +295,20 @@ function FormSection() {
         
         <SystemAccessList accesses={accesses} setAccesses={setAccesses} />
 
+        <div className="submit">
+          <button
+            type="submit"
+            className="submit-btn"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Skickar ärenden..." : "Skicka ärende"}
+          </button>
+        </div>
       </form>
     </div>
   );
-}
+});
+
+FormSection.displayName = 'FormSection';
 
 export default FormSection;

@@ -6,6 +6,8 @@ function ConfirmModal({
   message,
   warning,
   confirmLabel = "Ta bort",
+  endDate,
+  onEndDateChange,
   onConfirm,
   onCancel,
 }) {
@@ -20,22 +22,34 @@ function ConfirmModal({
         {warning && <p className="modal-message">{warning}</p>}
 
         <div className="modal-actions">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={onCancel}
-          >
-            Avbryt
-          </button>
+          <div className="modal-end-date">
+            <label htmlFor="modal-enddate">Slutdatum</label>
+            <input
+              id="modal-enddate"
+              type="date"
+              value={endDate ?? ""}
+              onChange={(e) => onEndDateChange?.(e.target.value)}
+            />
+          </div>
 
-          <button
-            type="button"
-            className="remove-btn"
-            onClick={onConfirm}
-          >
-            <i className="fa-solid fa-trash-can" />
-            {confirmLabel}
-          </button>
+          <div className="modal-buttons">
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={onCancel}
+            >
+              Avbryt
+            </button>
+
+            <button
+              type="button"
+              className="remove-btn"
+              onClick={onConfirm}
+            >
+              <i className="fa-solid fa-user-minus" />
+              {confirmLabel}
+            </button>
+          </div>
         </div>
       </div>
     </div>
