@@ -12,6 +12,7 @@ export const initAuth = async () => {
     const accounts = msalInstance.getAllAccounts();
     if (accounts.length > 0) {
       msalInstance.setActiveAccount(accounts[0]);
+      return await syncCurrentUser();
     }
   }
 

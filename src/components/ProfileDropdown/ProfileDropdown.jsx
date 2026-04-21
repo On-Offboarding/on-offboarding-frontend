@@ -41,6 +41,8 @@ function ProfileDropdown({ user = null }) {
       .slice(0, 2);
   };
 
+  if (!user) return null;
+
   return (
     <div className="profile-dropdown" ref={dropdownRef}>
       <button className="profile-btn"  onClick={toggleDropdown} aria-label="Öppna profilmeny">
