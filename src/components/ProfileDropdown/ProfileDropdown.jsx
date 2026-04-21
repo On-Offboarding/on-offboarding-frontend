@@ -73,7 +73,7 @@ function ProfileDropdown({ user = null }) {
           
           <ul className="dropdown-list">
             <li>
-              <button onClick={handleLogout}>
+              <button className="logout-btn" onClick={handleLogout}>
                 <i className="fa-solid fa-right-from-bracket"></i>
                 Logga ut
               </button>
