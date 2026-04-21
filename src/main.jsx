@@ -13,11 +13,7 @@ function Root() {
 
   useEffect(() => {
     const init = async () => {
-      await initAuth().then(() => {
-        const accounts = msalInstance.getAllAccounts();
-        if(accounts.length > 0)
-          navigate("/")
-      }); 
+      await initAuth();
       setIsReady(true);
     };
 
