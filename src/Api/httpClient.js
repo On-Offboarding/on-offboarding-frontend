@@ -49,8 +49,15 @@ class HttpClient {
 
   async requestBlob(method, endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
+    const token = await getAccessToken();
+    const headers = {
+      'Content-Type': 'application/pdf',
+      'Authorization': `Bearer ${token}`,
+      ...options.headers,
+    };
     const config = {
       method,
+      headers,
       signal: AbortSignal.timeout(API_TIMEOUT),
       ...options,
     };
