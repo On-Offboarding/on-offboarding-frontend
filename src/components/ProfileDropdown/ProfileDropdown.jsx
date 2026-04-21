@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ProfileDropdown.css';
+import { msalInstance } from '../../auth/msalConfig';
 
 function ProfileDropdown({ user = null }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,6 +25,10 @@ function ProfileDropdown({ user = null }) {
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    msalInstance.logoutRedirect({ postLogoutRedirectUri: '/login' });
   };
 
   // Få initialer från namn
@@ -66,10 +71,10 @@ function ProfileDropdown({ user = null }) {
           
           <ul className="dropdown-list">
             <li>
-              <a href="/login">
+              <button onClick={handleLogout}>
                 <i className="fa-solid fa-right-from-bracket"></i>
                 Logga ut
-              </a>
+              </button>
             </li>
           </ul>
           

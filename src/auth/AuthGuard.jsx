@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
-import { msalInstance } from "./msalConfig";
+import { useIsAuthenticated } from "@azure/msal-react";
 
 export default function AuthGuard({ children }) {
-  const account = msalInstance.getActiveAccount();
+  const isAuthenticated = useIsAuthenticated();
 
-  if (!account) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
