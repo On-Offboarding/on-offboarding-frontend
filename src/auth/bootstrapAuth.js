@@ -1,7 +1,7 @@
-import { msalInstance, msalInitPromise  } from "./msalConfig";
+import { msalInstance } from "./msalConfig";
 
 export const initAuth = async () => {
-  await msalInitPromise;
+  await msalInstance.initialize();
   const response = await msalInstance.handleRedirectPromise();
 
   if (response?.account) {

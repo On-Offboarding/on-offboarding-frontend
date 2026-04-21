@@ -13,7 +13,6 @@ class HttpClient {
   async request(method, endpoint, body = null, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;    
     const token = await getAccessToken();
-    console.log('TOKEN => ', token)
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,

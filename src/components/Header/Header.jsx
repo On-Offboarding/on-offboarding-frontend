@@ -1,8 +1,9 @@
 // Header.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ProfileDropdown from '../ProfileDropdown/ProfileDropdown';
 import Nav from '../Nav/Nav';
 import './Header.css';
+import { msalInstance } from '../../auth/msalConfig';
 
 function Header() {
 

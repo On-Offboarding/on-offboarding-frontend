@@ -1,4 +1,3 @@
-import React from 'react'
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { loginValidationRules } from '../../utils/validators';
 import "../Form/LoginForm.css";
@@ -12,8 +11,9 @@ function LoginForm() {
   };
 
   const handleSubmit = async (formData) => {
-    console.log('Formulär är giltigt:', formData);
-    await instance.loginRedirect({...loginRequest, redirectStartPage: window.location.pathname});
+    // console.log('Formulär är giltigt:', formData);
+    
+    await instance.loginRedirect({...loginRequest, loginHint: formData.email, redirectStartPage: '/'});
     // Här kan du skicka data till servern
   };
 
@@ -41,20 +41,6 @@ function LoginForm() {
           />
           {errors.email && <span className="error-message">{errors.email}</span>}
         </div>
-
-        {/* <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input 
-            type="password" 
-            id="password"
-            name="password" 
-            placeholder="Enter Your password"
-            value={formData.password}
-            onChange={handleChange}
-            className={errors.password ? 'input-error' : ''}
-          />
-          {errors.password && <span className="error-message">{errors.password}</span>}
-        </div> */}
 
         <div className="submit">
           <button id='login-btn' type="submit" className="submit-btn">

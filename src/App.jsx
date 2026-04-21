@@ -8,24 +8,23 @@ import Audit from "./pages/Audit/Audit.jsx";
 import Login from "./pages/SignIn/Login.jsx";
 import "./App.css";
 import CenterWrapperLayout from './layouts/CenterWrapperLayout.jsx';
+import AuthGuard from "./auth/AuthGuard.jsx";
 
 
 
 function App() {
   return (
     <Routes>
-      <Route element={<PortalLayout />}>
+       <Route element={<AuthGuard><PortalLayout /></AuthGuard>}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/offboarding" element={<Offboarding />} />
+        <Route path="/audit" element={<Audit />} />
       </Route>
 
       <Route element={<CenterWrapperLayout />}>
         <Route path="/login" element={<Login />} />
       </Route>
-
-      <Route path="/audit" element={<Audit />} />
-      
     </Routes>
   );
 }

@@ -30,9 +30,9 @@ function Dashboard() {
         setLoading(true);
         setError(null);
         const [data, profilesResponse, systemsResponse] = await Promise.all([
-          caseService.getAllCases().then(console.log),
-          systemAccessService.getAllProfiles().then(console.log),
-          systemAccessService.getAllSystems().then(console.log),
+          caseService.getAllCases(),
+          systemAccessService.getAllProfiles(),
+          systemAccessService.getAllSystems(),
         ]);
         setCases(Array.isArray(data) ? data : []);
         setProfiles(Array.isArray(profilesResponse) ? profilesResponse : []);
