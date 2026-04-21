@@ -4,15 +4,10 @@ import ProfileDropdown from '../ProfileDropdown/ProfileDropdown';
 import Nav from '../Nav/Nav';
 import './Header.css';
 import { msalInstance } from '../../auth/msalConfig';
+import { useUser } from '../../context/UserContext';
 
 function Header() {
-
-    // Dummy user data
-  const user = {
-    name: 'Orlando Laurentius',
-    role: 'Chef'
-  };
-
+  const currentUser = useUser();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const toggleMenu = () => {
@@ -25,7 +20,7 @@ function Header() {
         <button className="hamburger-btn" onClick={toggleMenu} aria-label="Toggle menu" >
           <span><i className="fa-solid fa-bars"></i> </span>
         </button>      
-        <ProfileDropdown user={user} />
+        <ProfileDropdown user={currentUser} />
       </header>
 
       

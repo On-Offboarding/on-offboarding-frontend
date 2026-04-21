@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ProfileDropdown.css';
 
-function ProfileDropdown({ user }) {
+function ProfileDropdown({ user = null }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 

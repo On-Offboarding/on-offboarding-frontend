@@ -7,13 +7,16 @@ import './styles/global.css'
 import { MsalProvider } from "@azure/msal-react";
 import { msalInstance } from "./auth/msalConfig";
 import { initAuth } from "./auth/bootstrapAuth.js";
+import { UserContext } from "./context/UserContext.jsx";
 
 function Root() {
   const [isReady, setIsReady] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     const init = async () => {
-      await initAuth();
+      const user = await initAuth();
+      if (user) setCurrentUser(user);
       setIsReady(true);
     };
 
@@ -21,13 +24,15 @@ function Root() {
   }, []);
 
   if (!isReady) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
   return (
     <MsalProvider instance={msalInstance}>
       <BrowserRouter>
-        <App />
-    </BrowserRouter>
+        <UserContext.Provider value={currentUser}>
+          <App />
+        </UserContext.Provider>
+      </BrowserRouter>
     </MsalProvider>
   );
 }
