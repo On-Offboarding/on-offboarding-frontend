@@ -11,10 +11,7 @@ function LoginForm() {
   };
 
   const handleSubmit = async (formData) => {
-    // console.log('Formulär är giltigt:', formData);
-    
     await instance.loginRedirect({...loginRequest, loginHint: formData.email, redirectStartPage: '/'});
-    // Här kan du skicka data till servern
   };
 
   const { formData, errors, handleChange, handleSubmit: handleFormSubmit } = 
@@ -34,7 +31,7 @@ function LoginForm() {
             type="text" 
             id="email"
             name="email" 
-            placeholder="Enter Your email adress"
+            placeholder="Enter Azure AD Email"
             value={formData.email}
             onChange={handleChange}
             className={errors.email ? 'input-error' : ''}
