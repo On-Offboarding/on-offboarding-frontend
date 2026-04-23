@@ -15,19 +15,19 @@ const formatTimestamp = (value) => {
 };
 
 const getEntryTitle = (item) => {
-  return item?.title || item?.action || item?.eventType || item?.eventName || 'Audit-händelse';
+  return item?.title || 'Audit-händelse';
 };
 
 const getEntryDescription = (item) => {
-  return item?.description || item?.details || item?.message || 'Ingen beskrivning tillgänglig';
+  return item?.description || 'Ingen beskrivning tillgänglig';
 };
 
 const getEntryUser = (item) => {
-  return item?.user || item?.performedBy || item?.createdBy || item?.email || 'Okänd användare';
+  return item?.byUser || 'Okänd användare';
 };
 
 const getEntryTimestamp = (item) => {
-  return item?.timestamp || item?.createdAt || item?.date || item?.occurredAt || null;
+  return item?.time || null;
 };
 
 const normalizeAuditEntry = (entry, index) => ({
@@ -93,13 +93,13 @@ function Audit() {
 
   return (
     <>
-      <header className='audit-header'>
+      {/* <header className='audit-header'>
         <NavLink to="/Audit" className="audit-link">
           <h1>Audit Trail</h1>
         </NavLink>
 
         <ProfileDropdown user={user} />
-      </header>
+      </header> */}
 
         <div className='audit-header-content'>
           <button className='back-button' onClick={() => navigate(-1)}>
@@ -129,7 +129,7 @@ function Audit() {
                   <h3 className='entry-title'>{entry.title}</h3>
                   <p className='entry-description'>{entry.description}</p>
                   <div className='entry-meta'>
-                    <span className='entry-user'>Av: {entry.user}</span>
+                    <span className='entry-user'>{entry.user}</span>
                     <span className='entry-timestamp'>• {entry.timestamp}</span>
                   </div>
                 </div>

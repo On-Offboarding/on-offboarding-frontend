@@ -9,4 +9,8 @@ async function getUserById(id) {
   return httpClient.get(ENDPOINTS.USER.GET_BY_ID(id));
 }
 
-export { getAllUsers, getUserById };
+async function syncCurrentUser() {
+  return httpClient.post(ENDPOINTS.USER.ME);
+}
+
+export { getAllUsers, getUserById, syncCurrentUser };

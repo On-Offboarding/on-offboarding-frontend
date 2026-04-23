@@ -1,17 +1,17 @@
-import React from 'react'
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { loginValidationRules } from '../../utils/validators';
 import "../Form/LoginForm.css";
+import { useMsal } from "@azure/msal-react";
+import { loginRequest } from "../../auth/msalConfig.js";
 
 function LoginForm() {
+  const { instance } = useMsal();
   const initialValues = {
-    email: '',
-    password: ''
+    email: ''
   };
 
-  const handleSubmit = (formData) => {
-    console.log('Formulär är giltigt:', formData);
-    // Här kan du skicka data till servern
+  const handleSubmit = async (formData) => {
+    await instance.loginRedirect({...loginRequest, loginHint: formData.email, redirectStartPage: '/'});
   };
 
   const { formData, errors, handleChange, handleSubmit: handleFormSubmit } = 
@@ -31,7 +31,7 @@ function LoginForm() {
             type="text" 
             id="email"
             name="email" 
-            placeholder="Enter Your email adress"
+            placeholder="Enter Azure AD Email"
             value={formData.email}
             onChange={handleChange}
             className={errors.email ? 'input-error' : ''}
@@ -39,23 +39,9 @@ function LoginForm() {
           {errors.email && <span className="error-message">{errors.email}</span>}
         </div>
 
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input 
-            type="password" 
-            id="password"
-            name="password" 
-            placeholder="Enter Your password"
-            value={formData.password}
-            onChange={handleChange}
-            className={errors.password ? 'input-error' : ''}
-          />
-          {errors.password && <span className="error-message">{errors.password}</span>}
-        </div>
-
         <div className="submit">
           <button id='login-btn' type="submit" className="submit-btn">
-            Login
+            Login with Azure
           </button>
         </div>
         

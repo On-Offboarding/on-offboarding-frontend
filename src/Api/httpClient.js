@@ -1,4 +1,5 @@
 import { API_BASE_URL, API_TIMEOUT } from './config.js';
+import { getAccessToken } from "../auth/tokenService.js";
 
 class HttpError extends Error {
   constructor(status, message, data) {
@@ -10,9 +11,11 @@ class HttpError extends Error {
 
 class HttpClient {
   async request(method, endpoint, body = null, options = {}) {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = `${API_BASE_URL}${endpoint}`;    
+    const token = await getAccessToken();
     const headers = {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
       ...options.headers,
     };
 
@@ -46,8 +49,15 @@ class HttpClient {
 
   async requestBlob(method, endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
+    const token = await getAccessToken();
+    const headers = {
+      'Content-Type': 'application/pdf',
+      'Authorization': `Bearer ${token}`,
+      ...options.headers,
+    };
     const config = {
       method,
+      headers,
       signal: AbortSignal.timeout(API_TIMEOUT),
       ...options,
     };

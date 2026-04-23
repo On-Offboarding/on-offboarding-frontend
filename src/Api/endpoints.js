@@ -30,6 +30,7 @@ export const ENDPOINTS = {
   USER: {
     GET_ALL: '/Api/User/GetAll',
     GET_BY_ID: (id) => `/Api/User/Get/${id}`,
+    ME: '/Api/User/me',
   },
 
   // Audit endpoints

@@ -75,17 +75,17 @@ export const loginValidationRules = {
       validate: (value) => validateEmail(value),
       message: 'Ogiltig e-postadress'
     }
-  ],
-  password: [
-    {
-      validate: (value) => validateRequired(value),
-      message: 'Lösenord är obligatoriskt'
-    },
-    {
-      validate: (value) => validatePassword(value),
-      message: 'Lösenord måste vara minst 6 tecken'
-    }
   ]
+  // password: [
+  //   {
+  //     validate: (value) => validateRequired(value),
+  //     message: 'Lösenord är obligatoriskt'
+  //   },
+  //   {
+  //     validate: (value) => validatePassword(value),
+  //     message: 'Lösenord måste vara minst 6 tecken'
+  //   }
+  // ]
 };
 //       validate: (value) => validateRequired(value),
 //       message: 'E-post är obligatorisk'
