@@ -104,7 +104,7 @@ function Audit() {
         <div className='audit-header-content'>
           <button className='back-button' onClick={() => navigate(-1)}>
             <i className="fa-solid fa-chevron-left"></i>
-            Tillbaka till årenden
+            Tillbaka till dashboard
           </button>
         </div>
 
