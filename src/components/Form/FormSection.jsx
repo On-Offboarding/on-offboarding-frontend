@@ -2,10 +2,10 @@ import { useEffect, useState, forwardRef } from "react";
 import { useFormValidation } from "../../hooks/useFormValidation";
 import { getFormSectionValidationRules } from "../../utils/validators";
 import { COMPANY_OPTIONS, getCompanyValue } from "../../utils/company";
-import { HARDCODED_CREATED_BY_USER } from "../../Api/config";
 import SystemAccessList from "../../components/Form/SystemAccessList";
 import { caseService } from "../../Api";
 import "../Form/FormSection.css";
+import { useUser } from '../../context/UserContext';
 
 const INITIAL_VALUES = {
   firstname: '',
@@ -52,7 +52,8 @@ const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
 
   const typeValue = normalizedType === "offboarding" ? 2 : 1;
   const statusValue = 1;
-  const createdByUser = HARDCODED_CREATED_BY_USER;
+  const currentUser = useUser();
+  const createdByUser = currentUser.Id;
 
   const normalizeSystemAccessId = (access) => {
     const rawId = access?.id ?? access?.systemAccessId ?? access?.systemId ?? null;
