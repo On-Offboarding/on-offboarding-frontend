@@ -3,8 +3,8 @@ import ToggleType from "../../components/Form/ToggleType";
 import OffboardingCard from "../../components/Cards/OffboardingCard";
 import SearchBar from "../../components/UI/SearchBar";
 import { caseService, employeeService } from "../../Api";
-import { HARDCODED_CREATED_BY_USER } from "../../Api/config";
 import { getCompanyLabel, getCompanyValue } from "../../utils/company";
+import { useUser } from "../../context/UserContext";
 import "./Offboarding.css";
 
 const extractList = (response) => {
@@ -106,6 +106,7 @@ const normalizeUser = (user) => {
 };
 
 function Offboarding() {
+  const currentUser = useUser();
   const [type, setType] = useState("offboarding");
   const [query, setQuery] = useState("");
   const [employees, setEmployees] = useState([]);
@@ -145,26 +146,16 @@ function Offboarding() {
         if (!isMounted) return;
 
         const sourceList = extractList(employeeResponse);
-        console.log('Raw employee list from API:', sourceList.length, 'items');
-
         const normalized = sourceList
           .map(normalizeUser)
           .filter((user) => user.id != null);
 
-        console.log('After normalization:', normalized.length, 'items');
-
-        // Deduplicate by ID to prevent showing same employee multiple times
         const seenIds = new Set();
         const deduplicated = normalized.filter((user) => {
-          if (seenIds.has(user.id)) {
-            console.warn(`Duplicate employee detected: ${user.name} (ID: ${user.id})`);
-            return false;
-          }
+          if (seenIds.has(user.id)) return false;
           seenIds.add(user.id);
           return true;
         });
-
-        console.log('After deduplication:', deduplicated.length, 'items');
 
         setEmployees(deduplicated);
 
@@ -214,11 +205,8 @@ function Offboarding() {
         },
         type: 2,
         status: 1,
-        createdByUser: HARDCODED_CREATED_BY_USER,
+        createdByUser: currentUser?.id,
       };
-
-      console.log('Offboarding case payload:', casePayload);
-      console.log('Number of accounts in payload:', casePayload.employee.accounts.length);
 
       await caseService.createCase(casePayload);
       setSuccessMessage("Ärende skapad framgångsrikt");
@@ -248,27 +236,11 @@ function Offboarding() {
         <SearchBar value={query} onChange={setQuery} />
 
         {successMessage && (
-          <div style={{
-            padding: "1rem",
-            backgroundColor: "#d4edda",
-            color: "#155724",
-            borderRadius: "4px",
-            marginBottom: "1rem",
-          }}>
-            {successMessage}
-          </div>
+          <div className="form-alert form-alert-success">{successMessage}</div>
         )}
 
         {errorMessage && (
-          <div style={{
-            padding: "1rem",
-            backgroundColor: "#f8d7da",
-            color: "#721c24",
-            borderRadius: "4px",
-            marginBottom: "1rem",
-          }}>
-            {errorMessage}
-          </div>
+          <div className="form-alert form-alert-error">{errorMessage}</div>
         )}
 
         {isLoading && <p>Laddar anställda...</p>}

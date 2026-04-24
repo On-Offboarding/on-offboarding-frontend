@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './CaseCard.css';
 import SystemAccessList from '../Form/SystemAccessList';
 import { caseService } from '../../Api';
-import { HARDCODED_CREATED_BY_USER } from '../../Api/config';
 import { getCompanyValue } from '../../utils/company';
+import { useUser } from '../../context/UserContext';
 
 
 const STATUS_LABELS = {
@@ -115,6 +115,7 @@ function CaseCard({
 }) {
 
   /* ================= STATE ================= */
+  const currentUser = useUser();
   const [showAccess, setShowAccess] = useState(false);
   const [accesses, setAccesses] = useState([]);
   const [localStatus, setLocalStatus] = useState(employee?.status || 'pending');
@@ -163,7 +164,7 @@ function CaseCard({
       const sourceCase = fullCase || {};
       const sourceEmployee = sourceCase?.employee || employee?.employee || {};
       const personalId = (sourceEmployee.personalId ?? employee.personalId ?? '').trim();
-      const createdByUser = HARDCODED_CREATED_BY_USER;
+      const createdByUser = currentUser?.id;
 
       if (!personalId) {
         setActionError('PersonalId saknas för ärendet och kan inte uppdateras.');
@@ -193,7 +194,6 @@ function CaseCard({
         createdByUser,
       };
 
-      console.log('Data som skickas:', caseDto);
       await caseService.updateCase(employee.id, caseDto);
       setLocalStatus(nextStatus);
       if (onStatusUpdate) {
@@ -347,7 +347,7 @@ function CaseCard({
                     onClick={handleCloseCase}
                     disabled={isUpdating}
                   >
-                    {isUpdating ? '⏳ Uppdaterar...' : 'Avsluta ärende'}
+                    {isUpdating ? '⏳ Uppdaterar...' : 'Uppdatera ärende'}
                   </button>
                 </div>
               </div>

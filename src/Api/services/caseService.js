@@ -14,7 +14,7 @@ async function createCase(caseData) {
 }
 
 async function updateCase(id, caseData) {
-  return httpClient.put(ENDPOINTS.CASES.UPDATE, { id, ...caseData });
+  return httpClient.put(ENDPOINTS.CASES.UPDATE, { ...caseData });
 }
 
 async function deleteCase(id) {
