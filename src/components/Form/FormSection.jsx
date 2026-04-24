@@ -53,7 +53,7 @@ const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
   const typeValue = normalizedType === "offboarding" ? 2 : 1;
   const statusValue = 1;
   const currentUser = useUser();
-  const createdByUser = currentUser.Id;
+  const createdByUser = currentUser?.id;
 
   const normalizeSystemAccessId = (access) => {
     const rawId = access?.id ?? access?.systemAccessId ?? access?.systemId ?? null;

@@ -1,55 +1,26 @@
-import { useFormValidation } from '../../hooks/useFormValidation';
-import { loginValidationRules } from '../../utils/validators';
 import "../Form/LoginForm.css";
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../auth/msalConfig.js";
 
 function LoginForm() {
   const { instance } = useMsal();
-  const initialValues = {
-    email: ''
-  };
 
-  const handleSubmit = async (formData) => {
-    await instance.loginRedirect({...loginRequest, loginHint: formData.email, redirectStartPage: '/'});
+  const handleLogin = () => {
+    instance.loginRedirect({ ...loginRequest, redirectStartPage: '/' });
   };
-
-  const { formData, errors, handleChange, handleSubmit: handleFormSubmit } = 
-    useFormValidation(initialValues, loginValidationRules, handleSubmit);
 
   return (
     <div className="login-form">
-
       <div className="form-header">
         <h2>Login</h2>
       </div>
-
-      <form onSubmit={handleFormSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input 
-            type="text" 
-            id="email"
-            name="email" 
-            placeholder="Enter Azure AD Email"
-            value={formData.email}
-            onChange={handleChange}
-            className={errors.email ? 'input-error' : ''}
-          />
-          {errors.email && <span className="error-message">{errors.email}</span>}
-        </div>
-
-        <div className="submit">
-          <button id='login-btn' type="submit" className="submit-btn">
-            Login with Azure
-          </button>
-        </div>
-        
-      </form>
-
-
+      <div className="submit">
+        <button id="login-btn" className="submit-btn" onClick={handleLogin}>
+          Login with Azure
+        </button>
+      </div>
     </div>
-  )
+  );
 }
 
-export default LoginForm
+export default LoginForm;

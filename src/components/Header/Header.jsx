@@ -3,7 +3,6 @@ import { useState } from 'react';
 import ProfileDropdown from '../ProfileDropdown/ProfileDropdown';
 import Nav from '../Nav/Nav';
 import './Header.css';
-import { msalInstance } from '../../auth/msalConfig';
 import { useUser } from '../../context/UserContext';
 
 function Header() {
