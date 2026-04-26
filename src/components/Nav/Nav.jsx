@@ -10,7 +10,7 @@ function Nav({ isOpen, }) {
   return (
     <nav className={isOpen ? 'mobile-menu-open' : ''}>
         <NavLink to ="/" className="nav-portal-links">        
-        <div className="nav-portal-link">Chef</div>
+        <div className="nav-portal-link">HireFlow</div>
         </NavLink>   
 
         <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>

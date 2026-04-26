@@ -281,7 +281,7 @@ const FormSection = forwardRef(({ type = "onboarding" }, ref) => {
           </div>
         )}
 
-        <div className="form-group">
+        <div className="form-group form-group--half">
           <label htmlFor="employmentdate">Anställningsdag</label>
           <input 
             type="date" 

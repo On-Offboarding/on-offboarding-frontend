@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./ConfirmRemove.css";
 
 function ConfirmModal({
@@ -11,11 +12,30 @@ function ConfirmModal({
   onConfirm,
   onCancel,
 }) {
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+
   if (!open) return null;
+
+  const isEndDateEmpty = !endDate || endDate.trim() === "";
+  const shouldShowError = attemptedSubmit && isEndDateEmpty;
+
+  const handleSubmit = () => {
+    if (isEndDateEmpty) {
+      setAttemptedSubmit(true);
+      return;
+    }
+    setAttemptedSubmit(false);
+    onConfirm?.();
+  };
+
+  const handleCancel = () => {
+    setAttemptedSubmit(false);
+    onCancel?.();
+  };
 
   return (
     <div className="modal-overlay" role="dialog" aria-modal="true">
-      <div className="modal">
+      <div id="confirm-modal" className="modal">
         <h3 className="modal-title">{title}</h3>
 
         {message && <p className="modal-message">{message}</p>}
@@ -30,13 +50,16 @@ function ConfirmModal({
               value={endDate ?? ""}
               onChange={(e) => onEndDateChange?.(e.target.value)}
             />
+            {shouldShowError && (
+              <p className="validation-error">Slutdatum krävs vid offboarding</p>
+            )}
           </div>
 
           <div className="modal-buttons">
             <button
               type="button"
               className="btn-secondary"
-              onClick={onCancel}
+              onClick={handleCancel}
             >
               Avbryt
             </button>
@@ -44,7 +67,7 @@ function ConfirmModal({
             <button
               type="button"
               className="remove-btn"
-              onClick={onConfirm}
+              onClick={handleSubmit}
             >
               <i className="fa-solid fa-user-minus" />
               {confirmLabel}
