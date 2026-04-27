@@ -112,6 +112,7 @@ const toAccountDto = (access) => {
 function CaseCard({
   employee,
   onStatusUpdate,
+  canManageCase = false,
 }) {
 
   /* ================= STATE ================= */
@@ -154,6 +155,7 @@ function CaseCard({
   }, [employee?.accounts]);
 
   const updateCaseStatus = async (nextStatus) => {
+    if (!canManageCase) return false;
     if (!employee?.id) return;
 
     try {
@@ -227,6 +229,7 @@ function CaseCard({
   };
 
   const handleCloseCase = async () => {
+    if (!canManageCase) return;
     const updated = await updateCaseStatus('completed');
     if (updated) {
       setShowAccess(false);
@@ -336,20 +339,25 @@ function CaseCard({
                 accesses={accesses}
                 setAccesses={setAccesses}
                 initialSelectedProfile={employee?.selectedProfile?.raw || employee?.selectedProfile || null}
+                readOnly={!canManageCase}
               />
 
               {/* ---------- Modal Footer ---------- */}
               <div className="modal-footer">
-                <div className="submit">
-                  <button 
-                    className="submit-btn" 
-                    type='button'
-                    onClick={handleCloseCase}
-                    disabled={isUpdating}
-                  >
-                    {isUpdating ? '⏳ Uppdaterar...' : 'Uppdatera ärende'}
-                  </button>
-                </div>
+                {canManageCase ? (
+                  <div className="submit">
+                    <button 
+                      className="submit-btn" 
+                      type='button'
+                      onClick={handleCloseCase}
+                      disabled={isUpdating}
+                    >
+                      {isUpdating ? ' Uppdaterar...' : 'Uppdatera ärende'}
+                    </button>
+                  </div>
+                ) : (
+                  <p className="case-readonly-message">Ärendet hanteras av administratören</p>
+                )}
               </div>
             </div>
 

@@ -109,7 +109,7 @@ const toCanonicalSystems = (profileSystems, allSystems) => {
     .filter((system) => Boolean(system?.name));
 };
 
-function SystemAccessList({ accesses, setAccesses, initialSelectedProfile = null }) {
+function SystemAccessList({ accesses, setAccesses, initialSelectedProfile = null, readOnly = false }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(initialSelectedProfile || null);
   const [profiles, setProfiles] = useState([]);
@@ -150,6 +150,8 @@ function SystemAccessList({ accesses, setAccesses, initialSelectedProfile = null
   }, []);
 
   const handleProfileSelect = (profile) => {
+    if (readOnly) return;
+
     setSelectedProfile(profile);
     setIsDropdownOpen(false);
 
@@ -190,6 +192,7 @@ function SystemAccessList({ accesses, setAccesses, initialSelectedProfile = null
   };
 
   const toggleAll = (e) => {
+    if (readOnly) return;
     e.preventDefault();
     if (!systems.length) return;
 
@@ -201,6 +204,8 @@ function SystemAccessList({ accesses, setAccesses, initialSelectedProfile = null
   };
 
   const toggleOne = (item) => {
+    if (readOnly) return;
+
     if (accesses.some((access) => isSameSystem(access, item))) {
       setAccesses(accesses.filter((access) => !isSameSystem(access, item)));
     } else {
@@ -220,6 +225,7 @@ function SystemAccessList({ accesses, setAccesses, initialSelectedProfile = null
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               aria-haspopup="listbox"
               aria-expanded={isDropdownOpen}
+              disabled={readOnly}
             >
               <span className="dropdown-text">
                 {selectedProfile ? getProfileName(selectedProfile) : "Välj profil..."}
@@ -262,9 +268,11 @@ function SystemAccessList({ accesses, setAccesses, initialSelectedProfile = null
               </ul>
             )}
           </div>
-          <button type="button" className="mark-all" onClick={toggleAll}>
-            {systems.length > 0 && accesses.length === systems.length ? "Avmarkera alla" : "Markera alla"}
-          </button>
+          {!readOnly && (
+            <button type="button" className="mark-all" onClick={toggleAll}>
+              {systems.length > 0 && accesses.length === systems.length ? "Avmarkera alla" : "Markera alla"}
+            </button>
+          )}
         </div>
       </div>
 
@@ -277,6 +285,7 @@ function SystemAccessList({ accesses, setAccesses, initialSelectedProfile = null
               type="checkbox"
               checked={accesses.some((access) => isSameSystem(access, sys))}
               onChange={() => toggleOne(sys)}
+              disabled={readOnly}
             />
             {sys.name}
           </label>
