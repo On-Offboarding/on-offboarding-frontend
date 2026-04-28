@@ -103,6 +103,14 @@
   font-size: var(--font-size-sm);
 }
 
+.case-readonly-message {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
 .export{
   width: 100%;
 }
@@ -163,9 +171,9 @@
   border-bottom: 1px solid var(--color-border-lighter);
 }
 
-.modal-body {
+/* .modal-body {
   padding: var(--spacing-lg) calc(var(--spacing-lg) + 0.25rem) var(--spacing-2xl);
-}
+} */
 
 .close-btn {
   border: none;

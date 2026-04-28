@@ -5,10 +5,14 @@ import Pagination from "../../components/UI/Pagination"
 import { useState, useEffect } from "react"
 import { caseService, systemAccessService } from "../../Api"
 import { normalizeCase, normalizeSystem } from "./caseNormalization"
+import { useUser } from "../../context/UserContext"
+import { canManageCases, canViewAudit } from "../../auth/permissions"
 
 function Dashboard() {
   const ITEMS_PER_PAGE = 10;
-  const isAdmin = true; // TODO: Få från auth context senare
+  const currentUser = useUser();
+  const isAdmin = canManageCases(currentUser);
+  const showAudit = canViewAudit(currentUser);
 
   const [filters, setFilters] = useState({
     status: "all",
@@ -136,6 +140,7 @@ function Dashboard() {
           <DashboardFilters 
             filters={filters}
             onChange={handleFilterChange}
+            showAudit={showAudit}
           />
 
           <div className="cases-container">
@@ -145,7 +150,7 @@ function Dashboard() {
                   key={caseItem.id} 
                   employee={caseItem}
                   onStatusUpdate={handleStatusUpdate}
-                  isAdmin={isAdmin}
+                  canManageCase={isAdmin}
                 />
               ))
             ) : (

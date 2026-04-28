@@ -46,11 +46,6 @@ function Audit() {
   const [error, setError] = useState('');
   const itemsPerPage = 5;
 
-  // Dummy user data 
-  const user = {
-    name: 'Orlando Laurentius',
-    role: 'Chef'
-  };
 
   useEffect(() => {
     const fetchAuditData = async () => {
@@ -93,14 +88,6 @@ function Audit() {
 
   return (
     <>
-      {/* <header className='audit-header'>
-        <NavLink to="/Audit" className="audit-link">
-          <h1>Audit Trail</h1>
-        </NavLink>
-
-        <ProfileDropdown user={user} />
-      </header> */}
-
         <div className='audit-header-content'>
           <button className='back-button' onClick={() => navigate(-1)}>
             <i className="fa-solid fa-chevron-left"></i>

@@ -209,7 +209,7 @@ function Offboarding() {
       };
 
       await caseService.createCase(casePayload);
-      setSuccessMessage("Ärende skapad framgångsrikt");
+      setSuccessMessage("Offboarding avslutades.");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
       console.error('Error creating offboarding case:', error);

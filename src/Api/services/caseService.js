@@ -17,10 +17,6 @@ async function updateCase(id, caseData) {
   return httpClient.put(ENDPOINTS.CASES.UPDATE, { ...caseData });
 }
 
-async function deleteCase(id) {
-  return httpClient.delete(ENDPOINTS.CASES.DELETE(id));
-}
-
 async function exportCaseToPdf(id) {
   const blob = await httpClient.getBlob(ENDPOINTS.CASES.EXPORT(id));
   const url = URL.createObjectURL(blob);
@@ -33,4 +29,4 @@ async function exportCaseToPdf(id) {
   URL.revokeObjectURL(url);
 }
 
-export { getAllCases, getCaseById, createCase, updateCase, deleteCase, exportCaseToPdf };
+export { getAllCases, getCaseById, createCase, updateCase, exportCaseToPdf };

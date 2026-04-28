@@ -166,7 +166,11 @@ main {
   min-height: 0;
 }
 
-
+@media (max-width: 320px){
+  main{
+    padding:.5rem;
+  }
+}
 
 /* Center wrapper layout */
 .center-wrapper {
